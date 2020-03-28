@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "cstdio": "c",
+        "*.inc": "c",
+        "*.tcc": "c",
+        "memory": "c",
+        "fstream": "c",
+        "istream": "c",
+        "ostream": "c",
+        "sstream": "c",
+        "streambuf": "c",
+        "memory_resource": "c",
+        "string_view": "c",
+        "functional": "c"
+    }
+}
