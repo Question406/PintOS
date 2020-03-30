@@ -30,6 +30,9 @@ static void busy_wait (int64_t loops);
 static void real_time_sleep (int64_t num, int32_t denom);
 static void real_time_delay (int64_t num, int32_t denom);
 
+/* the list for sleeping threads */
+static struct list sleepingThreads;
+
 /* Sets up the timer to interrupt TIMER_FREQ times per second,
    and registers the corresponding interrupt. */
 void
@@ -86,14 +89,25 @@ timer_elapsed (int64_t then)
 
 /* Sleeps for approximately TICKS timer ticks.  Interrupts must
    be turned on. */
+
+/*
+    Highlight:  Implement method:
+      instead of calling thread_yield, which just put current thread to wait_queue,
+      block calling thread
+   */
 void
 timer_sleep (int64_t ticks) 
 {
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
-    thread_yield ();
+  enum intr_level old_level = intr_disable ();
+
+  struct thread* callingThread = thread_current();
+  callingThread->wake_tick = start + ticks;
+  list_insert_ordered(&sleepingThreads, &callingThread->sleepelem, sleep_thread_cmp, NULL);
+  thread_block();
+  intr_set_level(old_level);
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -171,6 +185,19 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
+  enum intr_level old_level = intr_disable ();
+  // keep operations atomic
+  while (!list_empty(&sleepingThreads)) {
+    struct thread* t = list_entry(list_front(&sleepingThreads), struct thread, sleepelem);
+    if (t->wake_tick <= ticks)
+      {
+        thread_unblock(t);
+        list_pop_front(&sleepingThreads);
+      }
+    else
+      break;
+  }
+  intr_set_level (old_level);
   thread_tick ();
 }
 
@@ -243,4 +270,15 @@ real_time_delay (int64_t num, int32_t denom)
      the possibility of overflow. */
   ASSERT (denom % 1000 == 0);
   busy_wait (loops_per_tick * num / 1000 * TIMER_FREQ / (denom / 1000)); 
+}
+
+
+
+/* Used to compare the wake up time for threads */
+bool
+sleep_thread_cmp (const struct list_elem* t1, const struct list_elem* t2, void* aux)
+{
+  struct thread* thread1 = list_entry(t1, struct thread, sleepelem);
+  struct thread* thread2 = list_entry(t2, struct thread, sleepelem);
+  return thread1->wake_tick <= thread2->wake_tick;
 }
