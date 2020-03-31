@@ -124,26 +124,17 @@ pintos_init (void)
   /* Initialize file system. */
   ide_init ();
   locate_block_devices ();
-  filesys_init (format_filesys);  
+  filesys_init (format_filesys);
 #endif
 
   printf ("Boot complete.\n");
   
   if (*argv != NULL) {
+	printf("run_actions\n");
     /* Run actions specified on kernel command line. */
     run_actions (argv);
   } else {
     // TODO: no command line passed to kernel. Run interactively 
-    // char *header = "CS-318 PintOS>";
-    // char line[100];
-    // int linenum = 0;
-    // do {
-    //   printf(header);
-    //   linenum = getline(line, 100);
-    //   if (strcmp(line, "whoami") == 0)
-    //     puts("hello stupid");
-    // } while (strcmp(line, "exit") != 0);
-    // puts("exit");
   }
 
   /* Finish up. */

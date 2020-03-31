@@ -3,8 +3,6 @@
 #include "devices/intq.h"
 #include "devices/serial.h"
 
-// #define MYINPUTFUNC
-
 /* Stores keys from the keyboard and serial port. */
 static struct intq buffer;
 
@@ -32,12 +30,11 @@ input_putc (uint8_t key)
 uint8_t
 input_getc (void) 
 {
-
   enum intr_level old_level;
   uint8_t key;
 
   old_level = intr_disable ();
-  key = intq_get  c (&buffer);
+  key = intq_getc (&buffer);
   serial_notify ();
   intr_set_level (old_level);
   
@@ -53,25 +50,3 @@ input_full (void)
   ASSERT (intr_get_level () == INTR_OFF);
   return intq_full (&buffer);
 }
-
-
-#ifdef MYINPUTFUNC
-
-int getline(char *str, int lim) {
-    char ch;
-    int num = 0;
-    do {
-      ch = input_getc();
-      if (ch == 13 || num + 1 == lim) 
-        break;
-      str[num] = ch;
-      ++num;
-    } while (true);
-    str[num] = 0;
-    puts("getline get: ");
-    puts(str);
-    return num;
-}
-
-
-#endif

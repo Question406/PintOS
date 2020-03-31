@@ -38,6 +38,7 @@ static struct list sleepingThreads;
 void
 timer_init (void) 
 {
+  list_init(&sleepingThreads);
   pit_configure_channel (0, 2, TIMER_FREQ);
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
 }
@@ -98,13 +99,19 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
+  if (ticks <= 0) return;
+
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
-  enum intr_level old_level = intr_disable ();
 
+  // while (timer_elapsed(start) < ticks)
+  //   thread_yield();
+
+  enum intr_level old_level = intr_disable ();
   struct thread* callingThread = thread_current();
   callingThread->wake_tick = start + ticks;
+  // callingThread->wake_tick = ticks;
   list_insert_ordered(&sleepingThreads, &callingThread->sleepelem, sleep_thread_cmp, NULL);
   thread_block();
   intr_set_level(old_level);
@@ -179,16 +186,21 @@ timer_print_stats (void)
 {
   printf ("Timer: %"PRId64" ticks\n", timer_ticks ());
 }
+
 
 /* Timer interrupt handler. */
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
-  enum intr_level old_level = intr_disable ();
+  thread_tick ();
+
+  // thread_foreach(blocked_thread_check, NULL);
+
+  // enum intr_level old_level = intr_disable ();
   // keep operations atomic
   while (!list_empty(&sleepingThreads)) {
-    struct thread* t = list_entry(list_front(&sleepingThreads), struct thread, sleepelem);
+    struct thread* t = list_entry (list_front (&sleepingThreads), struct thread, sleepelem);
     if (t->wake_tick <= ticks)
       {
         thread_unblock(t);
@@ -197,8 +209,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
     else
       break;
   }
-  intr_set_level (old_level);
-  thread_tick ();
+  // intr_set_level (old_level);
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
@@ -274,11 +285,3 @@ real_time_delay (int64_t num, int32_t denom)
 
 
 
-/* Used to compare the wake up time for threads */
-bool
-sleep_thread_cmp (const struct list_elem* t1, const struct list_elem* t2, void* aux)
-{
-  struct thread* thread1 = list_entry(t1, struct thread, sleepelem);
-  struct thread* thread2 = list_entry(t2, struct thread, sleepelem);
-  return thread1->wake_tick <= thread2->wake_tick;
-}
