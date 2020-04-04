@@ -102,6 +102,13 @@ struct thread
     int64_t wake_tick;                  /* tick to wake this thread */
     struct list_elem sleepelem;         /* used to keep the sleep queue */
 
+      struct list holding_locks;       /* locks this thread holding */
+      int old_priority;
+      struct lock* lock_waiting;       /* lock this thread wants to acquire, but have to wait */
+   
+   /* Owend by mlfqs algorithm */
+   int nice_val;                       /* nice value for mlfqs */
+   int recent_cpu;                     /* recent_cpu for mlfqs */
 
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
@@ -145,8 +152,14 @@ int thread_get_load_avg (void);
 
 
 bool sleep_thread_cmp (const struct list_elem* t1, const struct list_elem* t2, void* aux);
-
-
-void blocked_thread_check (struct thread *t, void *aux UNUSED);
+bool thread_priority_cmp (const struct list_elem* t1, const struct list_elem* t2, void* aux);
+void thread_donate_priority(const struct thread* donate_to);
+void thread_hold_lock (struct lock* lock);
+void thread_update_priority(struct thread* to_update);
+void thread_remove_lock(struct lock* to_rm);
+void thread_update_recent_cpu_and_load_avg();
+void thread_update_recent_cpu(struct thread *t, void *aux);
+void thread_update_recent_cpu_one();
+void thread_update_priority_mlfqs(struct thread* to_update);
 
 #endif /* threads/thread.h */

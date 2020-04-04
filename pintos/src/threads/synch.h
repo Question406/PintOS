@@ -22,6 +22,10 @@ struct lock
   {
     struct thread *holder;      /* Thread holding lock (for debugging). */
     struct semaphore semaphore; /* Binary semaphore controlling access. */
+
+    struct list_elem lock_elem; /* used by thread to construct holding_locks list */
+    int max_priority;           /* the max priority from those threads waiting to acquire this lock */
+
   };
 
 void lock_init (struct lock *);
@@ -47,5 +51,13 @@ void cond_broadcast (struct condition *, struct lock *);
    optimization barrier.  See "Optimization Barriers" in the
    reference guide for more information.*/
 #define barrier() asm volatile ("" : : : "memory")
+
+bool lock_priority_cmp(const struct list_elem* l1, const struct list_elem* l2, void* aux);
+
+bool cond_sema_cmp (const struct list_elem* t1, const struct list_elem* t2, void* aux);
+
+
+bool
+lock_update_priority(struct lock* lock);
 
 #endif /* threads/synch.h */

@@ -130,7 +130,6 @@ pintos_init (void)
   printf ("Boot complete.\n");
   
   if (*argv != NULL) {
-	printf("run_actions\n");
     /* Run actions specified on kernel command line. */
     run_actions (argv);
   } else {
