@@ -1,6 +1,8 @@
 #ifndef THREADS_THREAD_H
 #define THREADS_THREAD_H
 
+// #define USERPROG
+
 #include <debug.h>
 #include <list.h>
 #include <stdint.h>
@@ -96,6 +98,8 @@ struct thread
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
+    int retVal;
+    struct list child_threads;
 #endif
 
    /*Owned by timer.c */
@@ -113,6 +117,13 @@ struct thread
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
+
+struct child_info {
+   tid_t child_tid;
+   bool is_exit_called;
+   bool has_been_waited;
+   struct list_elem elem_child_status;
+};
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.

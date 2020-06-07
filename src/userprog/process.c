@@ -46,7 +46,7 @@ process_execute (const char *file_name)
 
   /* Create a new thread to execute FILE_NAME. */
   // tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
-  tid = thread_create (executing_name, PRI_DEFAULT, start_process, file_name);
+  tid = thread_create (executing_name, PRI_DEFAULT, start_process, args);
   if (tid == TID_ERROR)           // if failed, free the page
     palloc_free_page (fn_copy); 
   return tid;
@@ -69,9 +69,11 @@ start_process (void *file_name_)
   success = load (file_name, &if_.eip, &if_.esp);
 
   /* If load failed, quit. */
-  palloc_free_page (file_name);
-  if (!success) 
+  // palloc_free_page (file_name);
+  if (!success)  {
+    palloc_free_page (file_name);
     thread_exit ();
+  }
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
@@ -93,11 +95,20 @@ start_process (void *file_name_)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
+process_wait (tid_t child_tid /*UNUSED*/) 
 {
+  // struct thread* t;
+  // t = get_thread_by_tid(child_tid);
+  // if (!t || t->status == THREAD_DYING || t->ret_status == RET_STATUS_INVALID) // TID invalid check
+    // return -1;
+
+  // while (t->status != THREAD_DYING) {
+  // }
   while (true) {
+
   }
-  // return -1;
+
+  return -1;
 }
 
 /* Free the current process's resources. */
@@ -110,7 +121,7 @@ process_exit (void)
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = cur->pagedir;
-  if (pd != NULL) 
+  if (pd != NULL) // Highlight: means user processe
     {
       /* Correct ordering here is crucial.  We must set
          cur->pagedir to NULL before switching page directories,
@@ -119,6 +130,7 @@ process_exit (void)
          directory before destroying the process's page
          directory, or our active page directory will be one
          that's been freed (and cleared). */
+      printf("%s: exit(%d) \n", cur->name, cur->retVal);
       cur->pagedir = NULL;
       pagedir_activate (NULL);
       pagedir_destroy (pd);
@@ -315,6 +327,7 @@ load (const char *args, void (**eip) (void), void **esp)
   // split args, still don't know why it fails to assign tokens in setup_stac,k
   char * tokens[64];
   int argc;
+  tokens[argc++] = t->name;
   char *token, *save_ptr;
   // arg tokens
   for ( token = strtok_r(args, " ", &save_ptr); 
@@ -325,7 +338,7 @@ load (const char *args, void (**eip) (void), void **esp)
   }
 
   /* Set up stack. */
-  if (!setup_stack (esp, argc, tokens))
+  if (argc > 64 || !setup_stack (esp, argc, tokens))
     goto done;
 
   /* Start address. */
@@ -466,8 +479,8 @@ setup_stack (void **esp, const int argc, const char *argv[])
         *esp = PHYS_BASE;     // stack top
 
         //push tokens from back and get pointers
-        uint32_t *argv_ptrs[argc];
-        int i, strlength;
+        uint32_t *argv_ptrs[64];
+        int i = 0, strlength = 0;
         for (i = argc - 1; i >= 0; i--) {
           strlength = strlen(argv[i]) + 1;
           *esp -= strlength;
@@ -481,7 +494,7 @@ setup_stack (void **esp, const int argc, const char *argv[])
         // push pointers from back
         // push NULL pointer for argv[argc]
         *esp -= 4;
-        *((uint32_t*) *esp) = NULL;
+        *(uint32_t *) *esp = (uint32_t) NULL;
 
         // push argvs
         for (i = argc - 1; i >= 0; i--) {
@@ -490,8 +503,10 @@ setup_stack (void **esp, const int argc, const char *argv[])
         }
 
         // push argv
+        * (uint32_t *) (*esp - 4) = *(uint32_t *) esp;
         *esp -= 4;
-        * (uint32_t *) (*esp) = *(uint32_t *) (esp + 4);
+        // *esp -= 4;
+        // * (uint32_t *) (*esp) = *(uint32_t *) (*esp + 4);
 
         // push argc
         *esp -= 4;
@@ -499,7 +514,7 @@ setup_stack (void **esp, const int argc, const char *argv[])
 
         // push return addr
         *esp -= 4;
-        *((uint32_t*) *esp) = NULL;
+        *((uint32_t*) *esp) = (uint32_t) NULL;
       }
       else
         palloc_free_page (kpage);
