@@ -104,10 +104,10 @@ thread_init (void)
   initial_thread->tid = allocate_tid ();
 
   load_avg = convert_to_fixed_point(0);
-  if (thread_mlfqs)
-    printf("123\n");
-  else
-    printf("1243421\n");
+  // if (thread_mlfqs)
+  //   printf("123\n");
+  // else
+  //   printf("1243421\n");
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.
@@ -191,6 +191,7 @@ thread_create (const char *name, int priority,
 
   /* Initialize thread. */
   init_thread (t, name, priority);
+
   tid = t->tid = allocate_tid ();
 
   /* Stack frame for kernel_thread(). */
@@ -498,6 +499,30 @@ init_thread (struct thread *t, const char *name, int priority)
   t->priority = priority;
   t->magic = THREAD_MAGIC;
 
+  #ifdef USERPROG
+  t->retVal = 0;
+  list_init(&t->child_threads);
+  list_init(&t->opened_files);
+  // sema_init(&(thread_current()->sema_waiting), 0);
+  // sema_init(&(thread_current()->sema_syncPaSon), 0);
+  t->child_fail_load = false;
+  sema_init(&t->sema_waiting, 0);
+  sema_init(&t->sema_syncPaSon, 0);
+  t->executing_file = NULL;
+  t->waitingBy = false;
+  t->exited = false;
+  lock_init(&t->child_thread_lock);
+  if (!(strcmp(name, "main") == 0 || strcmp(name, "idle") == 0)) { // has a parent
+    // printf("parent: %d\n", thread_current()->tid);
+    t->parentThread = thread_current(); // has a parent
+    // lock_acquire(&t->parentThread->child_thread_lock);
+    list_push_back(&t->parentThread->child_threads, &t->child_elem);
+    // lock_release(&t->parentThread->child_thread_lock);
+    // traverseChild(t->parentThread);
+  }
+  #endif
+  
+
   if (!thread_mlfqs) 
   {
     t->old_priority = priority;
@@ -784,4 +809,50 @@ thread_update_priority_mlfqs(struct thread* to_update)
   if (tmp_priority > PRI_MAX)
     tmp_priority = PRI_MAX;
   to_update->priority = tmp_priority;
+}
+
+/* get specific child thread*/
+struct thread* 
+get_child_thread(struct thread* cur, tid_t child_id)
+{
+  struct list* child_threads = &(cur->child_threads);
+  struct list_elem *itr = NULL, *next = NULL;
+
+  // printf("[DEBUG] %s, getChild start, asking %d\n", cur->name, child_id);  
+  if (!list_empty(child_threads)) {
+    for ( itr = list_front(child_threads); 
+          itr != list_end(child_threads); 
+          itr = next) {
+      next = list_next(itr);
+      struct thread *child_thread = list_entry(itr, struct thread, child_elem);
+      // printf("[DEBUG] getChild: %s, %d\n", child_thread->name, child_thread->tid);
+      if (child_thread->tid == child_id) {
+        // printf("[DEBUG] %s, getChild end\n", cur->name);
+        return child_thread;
+      }
+    }
+  }
+  // printf("[DEBUG] %s, getChild end\n", cur->name);
+  return NULL;
+}
+
+
+/*********************************************/
+void traverseChild(struct thread* cur) {
+  struct list* child_threads = &(cur->child_threads);
+  struct list_elem *itr = NULL, *next = NULL;
+  printf("[DEBUG] %s traverseChild start\n", cur->name); 
+  // lock_acquire(&cur->child_thread_lock); 
+  if (!list_empty(child_threads)) {
+    for (itr = list_front(child_threads); 
+          itr != list_end(child_threads); 
+          itr = next) {
+      next = list_next(itr);
+      printf("[DEBUG] next list_elem %d\n", next);
+      struct thread *child_thread = list_entry(itr, struct thread, child_elem);
+      printf("[DEBUG] %s, %d\n", child_thread->name, child_thread->tid);
+    }
+  }
+  printf("[DEBUG] %s traverseChild end\n", cur->name);  
+  // lock_release(&cur->child_thread_lock); 
 }

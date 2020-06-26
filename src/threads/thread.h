@@ -1,11 +1,13 @@
 #ifndef THREADS_THREAD_H
 #define THREADS_THREAD_H
 
-// #define USERPROG
+#define USERPROG
 
 #include <debug.h>
 #include <list.h>
 #include <stdint.h>
+
+#include "threads/synch.h"
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -82,6 +84,7 @@ typedef int tid_t;
    only because they are mutually exclusive: only a thread in the
    ready state is on the run queue, whereas only a thread in the
    blocked state is on a semaphore wait list. */
+   
 struct thread
   {
     /* Owned by thread.c. */
@@ -95,20 +98,31 @@ struct thread
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
 
+    struct list_elem child_elem;
+
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
     int retVal;
+    struct file *executing_file;
+    struct lock child_thread_lock;
     struct list child_threads;
+    struct list opened_files;
+    bool child_fail_load;
+    bool waitingBy;
+    bool exited;
+    struct semaphore sema_waiting;
+    struct semaphore sema_syncPaSon;
+    struct thread* parentThread;
 #endif
 
    /*Owned by timer.c */
     int64_t wake_tick;                  /* tick to wake this thread */
     struct list_elem sleepelem;         /* used to keep the sleep queue */
 
-      struct list holding_locks;       /* locks this thread holding */
-      int old_priority;
-      struct lock* lock_waiting;       /* lock this thread wants to acquire, but have to wait */
+   struct list holding_locks;       /* locks this thread holding */
+   int old_priority;
+   struct lock* lock_waiting;       /* lock this thread wants to acquire, but have to wait */
    
    /* Owend by mlfqs algorithm */
    int nice_val;                       /* nice value for mlfqs */
@@ -117,13 +131,6 @@ struct thread
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
-
-struct child_info {
-   tid_t child_tid;
-   bool is_exit_called;
-   bool has_been_waited;
-   struct list_elem elem_child_status;
-};
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
@@ -172,5 +179,16 @@ void thread_update_recent_cpu_and_load_avg();
 void thread_update_recent_cpu(struct thread *t, void *aux);
 void thread_update_recent_cpu_one();
 void thread_update_priority_mlfqs(struct thread* to_update);
+
+struct thread* get_child_thread(struct thread* cur, tid_t child_id);
+
+void traverseChild(struct thread* cur);
+
+/*********************************************************************/
+struct file_descriptor {
+   int fdID;
+   struct file *file;
+   struct list_elem elem;
+};
 
 #endif /* threads/thread.h */

@@ -18,14 +18,26 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 
+#ifdef USERPROG
+#include "userprog/syscall.h"
+#include "threads/thread.h"
+#endif
+
+#define DEBUG
+#ifdef DEBUG
+#define _DEBUG_PRINTF(...) printf(__VA_ARGS__)
+#endif
+
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
+static void push_args(void** esp, const int argc, const char *argv[]);
 
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
    before process_execute() returns.  Returns the new process's
    thread id, or TID_ERROR if the thread cannot be created. */
 tid_t
+// int
 process_execute (const char *file_name) 
 {
   char *fn_copy;
@@ -43,12 +55,22 @@ process_execute (const char *file_name)
   //                  'echo x y' into 'echo' ' x y'
   char *executing_name, *args;
   executing_name = strtok_r(fn_copy, " ", &args);
-
+  
   /* Create a new thread to execute FILE_NAME. */
   // tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
   tid = thread_create (executing_name, PRI_DEFAULT, start_process, args);
-  if (tid == TID_ERROR)           // if failed, free the page
+
+  sema_down(&thread_current()->sema_syncPaSon);
+  
+  // printf("[DEBUG] %s hi\n", thread_current()->name);
+  // traverseChild(thread_current());
+  
+  if (tid == TID_ERROR || thread_current()->child_fail_load) {          // if failed, free the page
+    thread_current()->child_fail_load = false;
     palloc_free_page (fn_copy); 
+    tid = TID_ERROR;
+  }
+  
   return tid;
 }
 
@@ -67,12 +89,31 @@ start_process (void *file_name_)
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
-
   /* If load failed, quit. */
-  // palloc_free_page (file_name);
+  // split args, still don't know why it fails to assign tokens in setup_stac,k
+  char *args = file_name;
+  char *tokens[64];
+  int argc = 0;
+  tokens[argc++] = thread_current()->name;
+  char *token, *save_ptr;
+  // arg tokens
+  for ( token = strtok_r(args, " ", &save_ptr); 
+        token != NULL;
+        token = strtok_r(NULL, " ", &save_ptr))
+  {
+    tokens[argc++] = token;
+  }
+
+  if (success)
+    push_args(&if_.esp, argc, tokens);
+
+  if (!success)
+    thread_current()->parentThread->child_fail_load = true;
+  sema_up(&(thread_current()->parentThread->sema_syncPaSon));
   if (!success)  {
-    palloc_free_page (file_name);
-    thread_exit ();
+    // palloc_free_page (file_name);
+    sys_exit(-1);
+    // thread_exit();
   }
 
   /* Start the user process by simulating a return from an
@@ -97,18 +138,27 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid /*UNUSED*/) 
 {
-  // struct thread* t;
-  // t = get_thread_by_tid(child_tid);
-  // if (!t || t->status == THREAD_DYING || t->ret_status == RET_STATUS_INVALID) // TID invalid check
-    // return -1;
-
-  // while (t->status != THREAD_DYING) {
-  // }
-  while (true) {
-
+  struct thread *cur_thread = thread_current ();
+  _DEBUG_PRINTF("[DEBUG] %s waiting %d\n", cur_thread->name, child_tid);
+  struct list *child_threads = &(cur_thread->child_threads);
+  struct thread *child_thread = get_child_thread(cur_thread, child_tid);
+  if (child_thread == NULL || child_thread->waitingBy) {  // already waiting
+    // printf("waiting error\n", child_tid);
+    return -1;
   }
+  else
+    child_thread->waitingBy = true;
 
-  return -1;
+  // wait(block) until child terminates
+  if (! child_thread->exited){
+    _DEBUG_PRINTF("[DEBUG] %s waiting %d, %s\n", cur_thread->name, child_tid, child_thread->name);
+    sema_down(& (child_thread->sema_waiting));
+  }
+  ASSERT (child_thread->exited);
+  // return the exit code of the child process
+  int retcode = child_thread->retVal;
+  // printf("[DEBUG] %s wait end\n", cur_thread->name);
+  return retcode;
 }
 
 /* Free the current process's resources. */
@@ -116,7 +166,47 @@ void
 process_exit (void)
 {
   struct thread *cur = thread_current ();
+  // printf("[DEBUG] %s exit begin\n", cur->name);
   uint32_t *pd;
+
+  // free resources, file structrue
+  struct list *opend_files = &cur->opened_files;
+  while (!list_empty(opend_files)) {
+    struct list_elem *elem = list_pop_front(opend_files);
+    struct file_descriptor *fileD = list_entry(elem, struct file_descriptor, elem);
+    file_close(fileD->file);
+    palloc_free_page(fileD);
+  }
+
+  // free child_thread list
+  struct list *child_threads = &cur->child_threads;
+  if (!list_empty(child_threads)) {
+    // lock_acquire(&cur->child_thread_lock);
+    struct thread* child_thread = get_child_thread(cur, 3);
+    // printf("[DEBUG] %s, %d\n", child_thread->name, child_thread->tid);
+    // printf("[DEBUG] %s delete child_threads\n", cur->name);
+    // lock_release(&cur->child_thread_lock);
+  }
+  // lock_acquire(&cur->child_thread_lock);
+  while (!list_empty(child_threads)) {
+    struct list_elem *temp = list_front(child_threads);
+    struct thread *child_thread = list_entry(temp, struct thread, child_elem);
+    struct list_elem *elem = list_pop_front (child_threads);
+  }
+  // lock_release(&cur->child_thread_lock);
+
+  // free executing_file
+  if (cur->executing_file) {
+    file_allow_write(cur->executing_file);
+    file_close(cur->executing_file);
+  }
+
+  cur->exited = true;
+  if (cur->parentThread)
+    list_remove(&cur->child_elem);
+  // printf("%s sema_waiting up\n", cur->name);
+  _DEBUG_PRINTF("[DEBUG] %s, %d sema_waiting up\n", cur->name, cur->tid);
+  sema_up (&cur->sema_waiting);
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
@@ -130,11 +220,12 @@ process_exit (void)
          directory before destroying the process's page
          directory, or our active page directory will be one
          that's been freed (and cleared). */
-      printf("%s: exit(%d) \n", cur->name, cur->retVal);
+      // printf("%s: exit(%d)\n", cur_thread->name, retVal);
       cur->pagedir = NULL;
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
+  // printf("[DEBUG] %s exit end\n", cur->name);
 }
 
 /* Sets up the CPU for running user code in the current
@@ -216,7 +307,7 @@ struct Elf32_Phdr
 #define PF_W 2          /* Writable. */
 #define PF_R 4          /* Readable. */
 
-static bool setup_stack (void **esp, const int argc, const char * argv[]);
+static bool setup_stack (void **esp);
 static bool validate_segment (const struct Elf32_Phdr *, struct file *);
 static bool load_segment (struct file *file, off_t ofs, uint8_t *upage,
                           uint32_t read_bytes, uint32_t zero_bytes,
@@ -248,7 +339,9 @@ load (const char *args, void (**eip) (void), void **esp)
   file = filesys_open (t->name);   // we put the executable name at thread->name
   if (file == NULL) 
     {
+      // printf("at %s\n",t->name);
       printf ("load: %s: open failed\n", t->name);
+      success = false;
       goto done; 
     }
 
@@ -324,31 +417,22 @@ load (const char *args, void (**eip) (void), void **esp)
         }
     }
 
-  // split args, still don't know why it fails to assign tokens in setup_stac,k
-  char * tokens[64];
-  int argc;
-  tokens[argc++] = t->name;
-  char *token, *save_ptr;
-  // arg tokens
-  for ( token = strtok_r(args, " ", &save_ptr); 
-        token != NULL;
-        token = strtok_r(NULL, " ", &save_ptr))
-  {
-    tokens[argc++] = token;
-  }
-
   /* Set up stack. */
-  if (argc > 64 || !setup_stack (esp, argc, tokens))
+  if (!setup_stack (esp))
     goto done;
 
   /* Start address. */
   *eip = (void (*) (void)) ehdr.e_entry;
 
+  // executing file
+  file_deny_write(file);
+  thread_current()->executing_file = file;
   success = true;
 
- done:
+done:
   /* We arrive here whether the load is successful or not. */
-  file_close (file);
+  if (!success)
+    file_close (file);
   return success;
 }
 
@@ -460,10 +544,45 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
   return true;
 }
 
+static 
+void push_args(void** esp, const int argc, const char *argv[]) {
+  //push tokens from back and get pointers
+  uint32_t *argv_ptrs[64];
+  int i = 0, strlength = 0;
+  for (i = argc - 1; i >= 0; i--) {
+    strlength = strlen(argv[i]) + 1;
+    *esp -= strlength;
+    memcpy(*esp, argv[i], strlength);
+    argv_ptrs[i] = *esp;
+  }
+  // align
+  *esp -= 4 - (strlength % 4);
+  // push pointers from back
+  // push NULL pointer for argv[argc]
+  *esp -= 4;
+  *(uint32_t *) *esp = (uint32_t) NULL;
+  // push argvs
+  for (i = argc - 1; i >= 0; i--) {
+    *esp -= 4;
+    *(uint32_t *) *esp = (uint32_t *) argv_ptrs[i];
+  }
+  // push argv
+  * (uint32_t *) (*esp - 4) = *(uint32_t *) esp;
+  *esp -= 4;
+  // *esp -= 4;
+  // * (uint32_t *) (*esp) = *(uint32_t *) (*esp + 4);
+  // push argc
+  *esp -= 4;
+  * (int *) *esp = argc;
+  // push return addr
+  *esp -= 4;
+  *((uint32_t*) *esp) = (uint32_t) NULL;
+}
+
 /* Create a minimal stack by mapping a zeroed page at the top of
    user virtual memory. */
 static bool
-setup_stack (void **esp, const int argc, const char *argv[]) 
+setup_stack (void **esp) 
 {
   uint8_t *kpage;
   bool success = false;
@@ -477,44 +596,6 @@ setup_stack (void **esp, const int argc, const char *argv[])
         //            push arg string, split arg , push arg pointers, fake return address pointer
         //      note: the stack should be pushed from top to bottom because of the layout
         *esp = PHYS_BASE;     // stack top
-
-        //push tokens from back and get pointers
-        uint32_t *argv_ptrs[64];
-        int i = 0, strlength = 0;
-        for (i = argc - 1; i >= 0; i--) {
-          strlength = strlen(argv[i]) + 1;
-          *esp -= strlength;
-          memcpy(*esp, argv[i], strlength);
-          argv_ptrs[i] = *esp;
-        }
-
-        // align
-        *esp -= 4 - (strlength % 4);
-
-        // push pointers from back
-        // push NULL pointer for argv[argc]
-        *esp -= 4;
-        *(uint32_t *) *esp = (uint32_t) NULL;
-
-        // push argvs
-        for (i = argc - 1; i >= 0; i--) {
-          *esp -= 4;
-          *(uint32_t *) *esp = (uint32_t *) argv_ptrs[i];
-        }
-
-        // push argv
-        * (uint32_t *) (*esp - 4) = *(uint32_t *) esp;
-        *esp -= 4;
-        // *esp -= 4;
-        // * (uint32_t *) (*esp) = *(uint32_t *) (*esp + 4);
-
-        // push argc
-        *esp -= 4;
-        * (int *) *esp = argc;
-
-        // push return addr
-        *esp -= 4;
-        *((uint32_t*) *esp) = (uint32_t) NULL;
       }
       else
         palloc_free_page (kpage);
