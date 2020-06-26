@@ -23,9 +23,11 @@
 #include "threads/thread.h"
 #endif
 
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define _DEBUG_PRINTF(...) printf(__VA_ARGS__)
+#else
+#define _DEBUG_PRINTF(...)
 #endif
 
 static thread_func start_process NO_RETURN;
@@ -43,43 +45,62 @@ process_execute (const char *file_name)
   char *fn_copy;
   tid_t tid;
 
+  struct process_control_block *pcb = NULL;
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
+  pcb = palloc_get_page(0);
+  if (pcb == NULL) {
+    if (fn_copy)
+      palloc_free_page(fn_copy);
+    return TID_ERROR;
+  }
 
+  pcb->tid = TID_ERROR;
+  pcb->child_fail_load = false;
+  pcb->waitingBy = false;
+  pcb->exited = false;
+  pcb->orphan = false;
+  sema_init(&pcb->sema_waiting, 0);
+  sema_init(&pcb->sema_syncPaSon, 0);
   // highlight: advised by pintos manual to call strtok_r,
   //            split 'echo x' into 'echo' ' x'
   //                  'echo x y' into 'echo' ' x y'
   char *executing_name, *args;
   executing_name = strtok_r(fn_copy, " ", &args);
-  
+  pcb->args = args;
   /* Create a new thread to execute FILE_NAME. */
   // tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
-  tid = thread_create (executing_name, PRI_DEFAULT, start_process, args);
-
-  sema_down(&thread_current()->sema_syncPaSon);
-  
+  tid = thread_create (executing_name, PRI_DEFAULT, start_process, pcb);
   // printf("[DEBUG] %s hi\n", thread_current()->name);
   // traverseChild(thread_current());
-  
-  if (tid == TID_ERROR || thread_current()->child_fail_load) {          // if failed, free the page
-    thread_current()->child_fail_load = false;
-    palloc_free_page (fn_copy); 
-    tid = TID_ERROR;
+  // if (tid == TID_ERROR || pcb->child_fail_load) {          // if failed, free the page
+  if (tid == TID_ERROR){
+    if (fn_copy)
+      palloc_free_page(fn_copy);
+    if (pcb)
+      palloc_free_page(pcb);
+    return TID_ERROR;
   }
-  
-  return tid;
+
+  sema_down(&pcb->sema_syncPaSon);
+  if (pcb->tid != TID_ERROR)
+    list_push_back(&thread_current()->child_threads, &pcb->child_elem);
+  palloc_free_page(fn_copy);
+  _DEBUG_PRINTF("want to execute: %s at %d\n", file_name, tid);
+  return pcb->tid;
 }
 
 /* A thread function that loads a user process and starts it
    running. */
 static void
-start_process (void *file_name_)
+start_process (void *_pcb)
 {
-  char *file_name = file_name_;
+  struct process_control_block* pcb = _pcb;
+  char *file_name = pcb->args;
   struct intr_frame if_;
   bool success;
 
@@ -92,7 +113,7 @@ start_process (void *file_name_)
   /* If load failed, quit. */
   // split args, still don't know why it fails to assign tokens in setup_stac,k
   char *args = file_name;
-  char *tokens[64];
+  char *tokens[32];
   int argc = 0;
   tokens[argc++] = thread_current()->name;
   char *token, *save_ptr;
@@ -104,17 +125,26 @@ start_process (void *file_name_)
     tokens[argc++] = token;
   }
 
-  if (success)
+  if (argc > 32)
+    success = false;
+  if (success) 
     push_args(&if_.esp, argc, tokens);
+  thread_current()->pcb = pcb;
+  pcb->tid = (success) ? thread_current()->tid : TID_ERROR;
+  pcb->related_thread = thread_current();
 
-  if (!success)
-    thread_current()->parentThread->child_fail_load = true;
-  sema_up(&(thread_current()->parentThread->sema_syncPaSon));
+  sema_up(&(pcb->sema_syncPaSon));
   if (!success)  {
-    // palloc_free_page (file_name);
+    _DEBUG_PRINTF("%d call exit\n", pcb->tid);
     sys_exit(-1);
-    // thread_exit();
   }
+
+  _DEBUG_PRINTF("%s %d user process start! cmd: why?\n", thread_current()->name, pcb->tid);
+  #ifdef DEBUG
+  // for (int i = 0; i < argc; i++)
+  //   _DEBUG_PRINTF("%s ", tokens[i]);
+  // _DEBUG_PRINTF("\n");
+  #endif
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
@@ -139,11 +169,9 @@ int
 process_wait (tid_t child_tid /*UNUSED*/) 
 {
   struct thread *cur_thread = thread_current ();
-  _DEBUG_PRINTF("[DEBUG] %s waiting %d\n", cur_thread->name, child_tid);
   struct list *child_threads = &(cur_thread->child_threads);
-  struct thread *child_thread = get_child_thread(cur_thread, child_tid);
-  if (child_thread == NULL || child_thread->waitingBy) {  // already waiting
-    // printf("waiting error\n", child_tid);
+  struct process_control_block *child_thread = get_child_thread(cur_thread, child_tid);
+  if (child_thread == NULL || child_thread->waitingBy) {  // already waiting, wait twice
     return -1;
   }
   else
@@ -151,12 +179,15 @@ process_wait (tid_t child_tid /*UNUSED*/)
 
   // wait(block) until child terminates
   if (! child_thread->exited){
-    _DEBUG_PRINTF("[DEBUG] %s waiting %d, %s\n", cur_thread->name, child_tid, child_thread->name);
+    _DEBUG_PRINTF("[DEBUG] %s %d waiting, %d\n", cur_thread->name, cur_thread->tid, child_thread->tid);
     sema_down(& (child_thread->sema_waiting));
   }
   ASSERT (child_thread->exited);
   // return the exit code of the child process
   int retcode = child_thread->retVal;
+
+  list_remove(&child_thread->child_elem); // delte child
+  palloc_free_page(child_thread);
   // printf("[DEBUG] %s wait end\n", cur_thread->name);
   return retcode;
 }
@@ -166,7 +197,6 @@ void
 process_exit (void)
 {
   struct thread *cur = thread_current ();
-  // printf("[DEBUG] %s exit begin\n", cur->name);
   uint32_t *pd;
 
   // free resources, file structrue
@@ -180,20 +210,17 @@ process_exit (void)
 
   // free child_thread list
   struct list *child_threads = &cur->child_threads;
-  if (!list_empty(child_threads)) {
-    // lock_acquire(&cur->child_thread_lock);
-    struct thread* child_thread = get_child_thread(cur, 3);
-    // printf("[DEBUG] %s, %d\n", child_thread->name, child_thread->tid);
-    // printf("[DEBUG] %s delete child_threads\n", cur->name);
-    // lock_release(&cur->child_thread_lock);
-  }
-  // lock_acquire(&cur->child_thread_lock);
+  struct process_control_block *child_thread = NULL;
   while (!list_empty(child_threads)) {
-    struct list_elem *temp = list_front(child_threads);
-    struct thread *child_thread = list_entry(temp, struct thread, child_elem);
     struct list_elem *elem = list_pop_front (child_threads);
+    child_thread = list_entry(elem, struct process_control_block, child_elem);
+    if (child_thread->exited)
+      palloc_free_page(child_thread);
+    else {
+      child_thread->related_thread->parentThread = NULL;
+      child_thread->orphan = true;
+    }
   }
-  // lock_release(&cur->child_thread_lock);
 
   // free executing_file
   if (cur->executing_file) {
@@ -201,12 +228,14 @@ process_exit (void)
     file_close(cur->executing_file);
   }
 
-  cur->exited = true;
-  if (cur->parentThread)
-    list_remove(&cur->child_elem);
-  // printf("%s sema_waiting up\n", cur->name);
+  cur->pcb->exited = true;
+  _DEBUG_PRINTF("process %d exiting\n", cur->tid);
   _DEBUG_PRINTF("[DEBUG] %s, %d sema_waiting up\n", cur->name, cur->tid);
-  sema_up (&cur->sema_waiting);
+  bool temp_orphan = cur->pcb->orphan; // father may 
+  sema_up (&cur->pcb->sema_waiting);
+
+  if (temp_orphan)
+    palloc_free_page(&cur->pcb);
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
@@ -336,6 +365,7 @@ load (const char *args, void (**eip) (void), void **esp)
 
   /* Open executable file. */
   // file = filesys_open (file_name); 
+  _DEBUG_PRINTF("open %s:\n", t->name);
   file = filesys_open (t->name);   // we put the executable name at thread->name
   if (file == NULL) 
     {
@@ -431,8 +461,8 @@ load (const char *args, void (**eip) (void), void **esp)
 
 done:
   /* We arrive here whether the load is successful or not. */
-  if (!success)
-    file_close (file);
+  // if (!success)
+  //   file_close (file);
   return success;
 }
 
@@ -546,7 +576,10 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
 
 static 
 void push_args(void** esp, const int argc, const char *argv[]) {
-  //push tokens from back and get pointers
+  // highlight: Do the argument setup described in 4.5.1, 
+  //            push arg string, split arg , push arg pointers, fake return address pointer
+  //      note: the stack should be pushed from top to bottom because of the layout
+  // push tokens from back and get pointers
   uint32_t *argv_ptrs[64];
   int i = 0, strlength = 0;
   for (i = argc - 1; i >= 0; i--) {
@@ -567,10 +600,11 @@ void push_args(void** esp, const int argc, const char *argv[]) {
     *(uint32_t *) *esp = (uint32_t *) argv_ptrs[i];
   }
   // push argv
-  * (uint32_t *) (*esp - 4) = *(uint32_t *) esp;
-  *esp -= 4;
+  // * (uint32_t *) (*esp - 4) = *(uint32_t *) esp;
   // *esp -= 4;
-  // * (uint32_t *) (*esp) = *(uint32_t *) (*esp + 4);
+  *esp -= 4;
+  *((void**) *esp) = (*esp + 4);
+  
   // push argc
   *esp -= 4;
   * (int *) *esp = argc;
@@ -592,9 +626,6 @@ setup_stack (void **esp)
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true); // map the page
       if (success) {
-        // highlight: Do the argument setup described in 4.5.1, 
-        //            push arg string, split arg , push arg pointers, fake return address pointer
-        //      note: the stack should be pushed from top to bottom because of the layout
         *esp = PHYS_BASE;     // stack top
       }
       else

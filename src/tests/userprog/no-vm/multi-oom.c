@@ -39,6 +39,7 @@ spawn_child (int c, enum child_termination_mode mode)
   char child_cmd[128];
   snprintf (child_cmd, sizeof child_cmd,
             "%s %d %s", test_name, c, mode == CRASH ? "-k" : "");
+//  printf("cmd : %s\n", child_cmd);
   return exec (child_cmd);
 }
 
@@ -177,3 +178,4 @@ main (int argc, char *argv[])
   return expected_depth;
 }
 // vim: sw=2
+

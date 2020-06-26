@@ -216,7 +216,7 @@ void
 sys_exit(int retVal) {
   struct thread * cur_thread = thread_current();
   printf("%s: exit(%d)\n", cur_thread->name, retVal);
-  cur_thread->retVal = retVal;
+  cur_thread->pcb->retVal = retVal;
   thread_exit ();
   return -1;
 }
@@ -287,6 +287,10 @@ sys_open(const char* file) {
   check_valid_ptr(file);
   int res = -1;
   struct file_descriptor* file_desc = palloc_get_page(0);
+  
+  if (file_desc == NULL) // not enough space
+    return -1;
+
   lock_acquire (&fileSys_lock);
   struct file* File;
   File = filesys_open(file);
@@ -372,17 +376,16 @@ sys_tell(int fd) {
   lock_acquire(&fileSys_lock);
   struct file_descriptor* fileD = get_file_descriptor(thread_current(), fd); 
   unsigned res = -1;
-  if (fileD && fileD->file) {
+  if (fileD && fileD->file) 
     res = file_tell(fileD->file);
-  } 
   lock_release(&fileSys_lock);
   return res;
 }
 
 static void 
 sys_close(int fd) {
-  lock_acquire (&fileSys_lock);
   struct file_descriptor* file = get_file_descriptor(thread_current(), fd);
+  lock_acquire (&fileSys_lock);
   if (file) {
     file_close(file->file);
     list_remove(&(file->elem));

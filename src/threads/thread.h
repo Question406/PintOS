@@ -98,21 +98,13 @@ struct thread
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
 
-    struct list_elem child_elem;
-
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
-    int retVal;
-    struct file *executing_file;
-    struct lock child_thread_lock;
     struct list child_threads;
     struct list opened_files;
-    bool child_fail_load;
-    bool waitingBy;
-    bool exited;
-    struct semaphore sema_waiting;
-    struct semaphore sema_syncPaSon;
+    struct file *executing_file;
+    struct process_control_block *pcb;
     struct thread* parentThread;
 #endif
 
@@ -180,7 +172,7 @@ void thread_update_recent_cpu(struct thread *t, void *aux);
 void thread_update_recent_cpu_one();
 void thread_update_priority_mlfqs(struct thread* to_update);
 
-struct thread* get_child_thread(struct thread* cur, tid_t child_id);
+struct process_control_block* get_child_thread(struct thread* cur, tid_t child_id);
 
 void traverseChild(struct thread* cur);
 
