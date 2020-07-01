@@ -33,6 +33,10 @@
 #else
 #include "tests/threads/tests.h"
 #endif
+#ifdef VM
+#include "vm/frame.h"
+#include "vm/swap.h"
+#endif
 #ifdef FILESYS
 #include "devices/block.h"
 #include "devices/ide.h"
@@ -55,6 +59,10 @@ static const char *scratch_bdev_name;
 static const char *swap_bdev_name;
 #endif
 #endif /* FILESYS */
+
+#ifdef VM
+static const char *swap_bdev_name;
+#endif
 
 /* -ul: Maximum number of pages to put into palloc's user pool. */
 static size_t user_page_limit = SIZE_MAX;
@@ -101,6 +109,9 @@ pintos_init (void)
   malloc_init ();
   paging_init ();
 
+#ifdef VM
+  vm_frame_init();
+#endif
   /* Segmentation. */
 #ifdef USERPROG
   tss_init ();
@@ -129,7 +140,9 @@ pintos_init (void)
   locate_block_devices ();
   filesys_init (format_filesys);
 #endif
-
+#ifdef VM
+    vm_swap_init ();
+#endif
   printf ("Boot complete.\n");
   
   if (*argv != NULL) {

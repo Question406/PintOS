@@ -23,6 +23,13 @@
 #include "threads/thread.h"
 #endif
 
+#ifndef VM
+#include "vm/frame.h"
+#include "vm/page.h"
+#define vm_frame_alloca(x, y) palloc_get_page(x)
+#define vm_frame_free(x) palloc_free_page(x)
+#endif
+
 // #define DEBUG
 #ifdef DEBUG
 #define _DEBUG_PRINTF(...) printf(__VA_ARGS__)
@@ -60,7 +67,7 @@ process_execute (const char *file_name)
   }
 
   pcb->tid = TID_ERROR;
-  pcb->child_fail_load = false;
+  //pcb->child_fail_load = false;
   pcb->waitingBy = false;
   pcb->exited = false;
   pcb->orphan = false;
@@ -208,6 +215,17 @@ process_exit (void)
     palloc_free_page(fileD);
   }
 
+ #ifdef VM
+  //mmap desc
+  struct list *list0 = &cur->mmap_list;
+  while(!list_empty(list0)){
+      struct list_elem *l_elem = list_begin(list0);
+      struct mmap_desc *desc = list_entry(l_elem, struct mmap_desc, elem);
+
+      ASSERT( sys_munmap(desc->id) == true);
+  }
+ #endif
+
   // free child_thread list
   struct list *child_threads = &cur->child_threads;
   struct process_control_block *child_thread = NULL;
@@ -236,6 +254,11 @@ process_exit (void)
 
   if (temp_orphan)
     palloc_free_page(&cur->pcb);
+
+  #ifdef VM
+    vm_supt_destroy(cur->supt);
+    cur->supt = NULL;
+  #endif
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
@@ -272,7 +295,7 @@ process_activate (void)
      interrupts. */
   tss_update ();
 }
-
+
 /* We load ELF binaries.  The following definitions are taken
    from the ELF specification, [ELF1], more-or-less verbatim.  */
 
@@ -359,6 +382,9 @@ load (const char *args, void (**eip) (void), void **esp)
 
   /* Allocate and activate page directory. */
   t->pagedir = pagedir_create ();
+#ifdef VM
+  t->supt = vm_supt_create();
+#endif
   if (t->pagedir == NULL) 
     goto done;
   process_activate ();
@@ -546,6 +572,13 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
       size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
       size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
+#ifdef VM
+      struct thread *cur_thread = thread_current();
+      ASSERT (pagedir_get_page(cur_thread->pagedir, upage) == NULL);
+
+      if(!vm_supt_install_filesys(cur_thread->supt, upage, file, ofs, page_read_bytes, page_zero_bytes, writable))
+          return false;
+#else
       /* Get a page of memory. */
       uint8_t *kpage = palloc_get_page (PAL_USER);
       if (kpage == NULL)
@@ -565,11 +598,14 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
           palloc_free_page (kpage);
           return false; 
         }
-
+#endif
       /* Advance. */
       read_bytes -= page_read_bytes;
       zero_bytes -= page_zero_bytes;
       upage += PGSIZE;
+#ifdef VM
+      ofs += PGSIZE;
+#endif
     }
   return true;
 }
@@ -648,8 +684,13 @@ install_page (void *upage, void *kpage, bool writable)
 {
   struct thread *t = thread_current ();
 
+  bool success = (pagedir_get_page (t->pagedir, upage) == NULL);
+  success = success && (pagedir_set_page (t->pagedir, upage, kpage, writable));
   /* Verify that there's not already a page at that virtual
      address, then map our page there. */
-  return (pagedir_get_page (t->pagedir, upage) == NULL
-          && pagedir_set_page (t->pagedir, upage, kpage, writable));
+#ifdef VM
+  success = success && vm_supt_install_frame(t->supt, upage, kpage);
+  if(success) vm_frame_unpin(kpage);
+#endif
+  return success;
 }

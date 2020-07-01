@@ -11,6 +11,9 @@
 
 #include "userprog/process.h"
 
+#ifdef VM
+#include "vm/page.h"
+#endif
 
 static void syscall_handler (struct intr_frame *);
 
@@ -29,6 +32,16 @@ static int sys_read(int fd, void *buffer, unsigned size);
 static void sys_seek(int fd, unsigned position);
 static unsigned sys_tell(int fd);
 static void sys_close(int fd);
+
+#ifdef VM
+bool sys_munmap(mmapid_t);
+mmapid_t sys_mmap(int *fd, void *);
+
+void preload_pin_pages(const void *, size_t);
+void preload_unpin_pages(const void *, size_t);
+
+static struct mmap_desc* find_mmap_desc(struct thread*, mmapid_t fd);
+#endif
 
 static int mem_read(void *from, void* writeTo, int bytes);
 static int32_t get_user (const uint8_t *uaddr);
@@ -70,6 +83,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 {
   int syscall_num;
   mem_read(f->esp, &syscall_num, sizeof(int));
+  thread_current()->cur_esp = f->esp;
   switch (syscall_num) {
     case SYS_HALT:
     {
@@ -204,6 +218,27 @@ syscall_handler (struct intr_frame *f UNUSED)
       sys_close(fd);
       break;
     }
+
+#ifdef VM
+    case SYS_MMAP:
+    {
+      int fd;
+      void *addr;
+      mem_read(f->esp + 4, &fd, sizeof(fd));
+      mem_read(f->esp + 8, &addr, sizeof(addr));
+      mmapid_t res = sys_mmap (fd, addr);
+      f->eax = res;
+      break;
+    }
+
+      case SYS_MUNMAP:
+      {
+        mmapid_t mid;
+        mem_read(f->esp + 4, &mid, sizeof(mid));
+        sys_munmap(mid);
+        break;
+      }
+#endif
   }
 }
 
@@ -251,7 +286,15 @@ sys_write(int fd, const void *buffer, unsigned size) {
   else { // file
     struct file_descriptor* file = get_file_descriptor(thread_current(), fd);
     if (file && file->file) //file should be opened by cur thread
-      res = file_write(file->file, buffer, size);
+    {
+#ifdef VM
+        preload_pin_pages(buffer, size);
+#endif
+        res = file_write(file->file, buffer, size);
+#ifdef VM
+        preload_unpin_pages(buffer, size);
+#endif
+    }
   }
   lock_release (&fileSys_lock);
   return res;
@@ -350,7 +393,13 @@ sys_read(int fd, void *buffer, unsigned size) {
     if (fileD == NULL || fileD->file == NULL)
       res = -1;
     else {
+#ifdef VM
+        preload_pin_pages(buffer, size);
+#endif
       res = file_read(fileD->file, buffer, size);
+#ifdef VM
+      preload_unpin_pages(buffer, size);
+#endif
     }
   }
   lock_release(&fileSys_lock);
@@ -453,3 +502,101 @@ put_user (uint8_t *udst, uint8_t byte) {
       : "=&a" (error_code), "=m" (*udst) : "q" (byte));
   return error_code != -1;
 }
+
+#ifdef VM
+bool sys_munmap(mmapid_t mid){
+    struct thread * cur_thread = thread_current ();
+    struct mmap_desc *mmap_d = find_mmap_desc(cur_thread, mid);
+    if(mmap_d == NULL)
+        return false;
+    lock_acquire(&fileSys_lock);
+    {size_t file_size = mmap_d->size;
+    for(size_t offset=0; offset<file_size; offset+=PGSIZE){
+        void *addr = mmap_d->addr + offset;
+        size_t bytes = (offset + PGSIZE < file_size ? PGSIZE : file_size-offset);
+        vm_supt_mm_unmap(cur_thread->supt, cur_thread->pagedir, addr, mmap_d->file, offset, bytes);
+    }
+    list_remove(&mmap_d->elem);
+    file_close(mmap_d->file);
+    free(mmap_d);}
+    lock_release(&fileSys_lock);
+    return true;
+}
+
+mmapid_t sys_mmap(int *fd, void *usr_page){
+    if(usr_page == NULL || pg_ofs(usr_page) != 0)
+        return -1;
+    if(fd <= 1)
+        return -1;
+    struct thread * cur_thread = thread_current ();
+    lock_acquire(&fileSys_lock);
+
+    struct file* file = NULL;
+    struct file_descriptor *fileD = get_file_descriptor(thread_current(), fd);
+    if(fileD && fileD->file)
+        file = file_reopen(fileD->file);
+    if(file == NULL){
+        lock_release (&fileSys_lock);
+        return -1;
+    }
+    size_t file_size = file_length (file);
+    if(file_size == 0){
+        lock_release (&fileSys_lock);
+        return -1;
+    }
+    for(size_t offset=0; offset < file_size; offset+=PGSIZE){
+        void *addr = usr_page + offset;
+        if(vm_supt_has_entry(cur_thread->supt, addr)){
+            lock_release (&fileSys_lock);
+            return -1;
+        }
+    }
+    for(size_t offset=0; offset < file_size; offset+=PGSIZE){
+        void *addr = usr_page + offset;
+        size_t read_bytes = (offset + PGSIZE < file_size ? PGSIZE : file_size - offset);
+        size_t zero_bytes = PGSIZE - read_bytes;
+        vm_supt_install_filesys(cur_thread->supt, addr, file, offset, read_bytes, zero_bytes, true);
+    }
+
+    mmapid_t mid;
+    if(!list_empty(&cur_thread->mmap_list))
+        mid = list_entry(list_back(&cur_thread->mmap_list), struct mmap_desc, elem)->id + 1;
+    else mid = 1;
+    struct mmap_desc *mmap_d = (struct mmap_desc*)malloc(sizeof(struct mmap_desc));
+    mmap_d->id = mid;
+    mmap_d->addr = usr_page;
+    mmap_d->file = file;
+    mmap_d->size = file_size;
+    list_push_back(&cur_thread->mmap_list, &mmap_d->elem);
+    lock_release (&fileSys_lock);
+    return mid;
+}
+
+void preload_pin_pages(const void *buffer, size_t size){
+    struct supplemental_page_table *supt = thread_current()->supt;
+    uint32_t *pagedir = thread_current ()->pagedir;
+    for(void *usr_page = pg_round_down(buffer); usr_page < buffer + size; usr_page+=PGSIZE){
+        vm_load_page(supt, pagedir, usr_page);
+        vm_pin_page(supt, usr_page);
+    }
+}
+
+void preload_unpin_pages(const void *buffer, size_t size){
+    struct supplemental_page_table *supt = thread_current()->supt;
+    for(void *usr_page = pg_round_down(buffer); usr_page < buffer + size; usr_page+=PGSIZE){
+        vm_unpin_page(supt, usr_page);
+    }
+}
+
+static struct mmap_desc* find_mmap_desc(struct thread* t, mmapid_t fd){
+    ASSERT (t!= NULL);
+    if(! list_empty(&t->mmap_list)){
+        for(struct list_elem *l_elem = list_begin(&t->mmap_list); l_elem != list_end(&t->mmap_list); l_elem = list_next(l_elem)){
+            struct mmap_desc *mmap_d = list_entry(l_elem, struct mmap_desc, elem);
+            if(mmap_d->id == fd)
+                return mmap_d;
+        }
+    }
+    return NULL;
+}
+#endif

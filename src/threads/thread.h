@@ -1,14 +1,14 @@
 #ifndef THREADS_THREAD_H
 #define THREADS_THREAD_H
 
-#define USERPROG
-
 #include <debug.h>
 #include <list.h>
 #include <stdint.h>
 
 #include "threads/synch.h"
-
+#ifdef VM
+#include "vm/page.h"
+#endif
 /* States in a thread's life cycle. */
 enum thread_status
   {
@@ -106,6 +106,11 @@ struct thread
     struct file *executing_file;
     struct process_control_block *pcb;
     struct thread* parentThread;
+    uint8_t *cur_esp;
+#endif
+#ifdef VM
+    struct supplemental_page_table *supt;
+    struct list mmap_list;
 #endif
 
    /*Owned by timer.c */

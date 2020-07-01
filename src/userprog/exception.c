@@ -2,11 +2,18 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include "userprog/gdt.h"
+#include "userprog/syscall.h"
+#include "userprog/pagedir.h"
 #include "threads/interrupt.h"
 #include "threads/thread.h"
-
+#include "threads/vaddr.h"
 #ifdef USERPROG
 #include "userprog/process.h"
+#endif
+#define MAX_STACK_SIZE 0x800000
+#ifdef VM
+#include "vm/page.h"
+#include "vm/frame.h"
 #endif
 
 /* Number of page faults processed. */
@@ -152,6 +159,20 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
+#if VM
+  struct thread * cur_thread = thread_current ();
+  void *fault_page = (void*) pg_round_down(fault_addr);
+  if(not_present){
+      void *esp = user ? f->esp : cur_thread->cur_esp;
+      bool frame_on_stack = (esp <= fault_addr || fault_addr == f->esp-4 || fault_addr == f->esp-32);
+      bool is_stack_addr = (PHYS_BASE-MAX_STACK_SIZE <= fault_addr && fault_addr < PHYS_BASE);
+      if(frame_on_stack && is_stack_addr && !vm_supt_has_entry(cur_thread->supt, fault_page))
+          vm_supt_install_zeropage(cur_thread->supt, fault_page);
+      if(vm_load_page(cur_thread->supt, cur_thread->pagedir, fault_page))
+          return;
+  }
+
+#endif
    if(!user) { // as described in pintos book
       f->eip = (void *) f->eax;
       f->eax = 0xffffffff;

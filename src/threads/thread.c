@@ -507,7 +507,10 @@ init_thread (struct thread *t, const char *name, int priority)
   list_init(&t->opened_files);
   t->executing_file = NULL;
   #endif
-  
+
+  #ifdef VM
+    list_init(&t->mmap_list);
+  #endif
 
   if (!thread_mlfqs) 
   {
