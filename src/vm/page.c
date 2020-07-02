@@ -57,7 +57,6 @@ bool vm_supt_install_zeropage (struct supplemental_page_table *supt, void *usr_p
     prev_elem = hash_insert(&supt->page_hash, &spte->elem);
     if(prev_elem == NULL)
         return true;
-    PANIC ("Duplicated SUPT entry for zeropage");
     return false;
 }
 
@@ -107,8 +106,6 @@ bool vm_supt_has_entry (struct supplemental_page_table *supt, void *page){
 
 bool vm_supt_set_dirty (struct supplemental_page_table *supt, void *page, bool value){
     struct supplemental_page_table_entry *spte = vm_supt_lookup(supt, page);
-    if(spte == NULL)
-        PANIC("set dirty - the request page doesn't exist");
     spte->dirty = value || spte->dirty;
     return true;
 }
@@ -131,7 +128,7 @@ bool vm_load_page(struct supplemental_page_table *supt, uint32_t *pagedir, void 
     if(spte->status == ON_FRAME)
         return true;
 
-    void *frame_page = vm_frame_alloca(PAL_USER, usr_page);
+    void *frame_page = vm_frame_allocate(PAL_USER, usr_page);
     if(frame_page == NULL)
         return false;
 
@@ -148,7 +145,6 @@ bool vm_load_page(struct supplemental_page_table *supt, uint32_t *pagedir, void 
             can_write = spte->can_write;
             break;
         default:
-            PANIC ("unreachable state");
     }
 
     if(!pagedir_set_page(pagedir, usr_page, frame_page, can_write)){
@@ -166,10 +162,7 @@ bool vm_load_page(struct supplemental_page_table *supt, uint32_t *pagedir, void 
 
 bool vm_supt_mm_unmap(struct supplemental_page_table *supt, uint32_t *pagedir, void *page, struct file *file, off_t offset, size_t bytes){
     struct supplemental_page_table_entry *spte = vm_supt_lookup(supt, page);
-    if(spte == NULL)
-        PANIC ("munmap - some page is missing; can't happen!");
     if(spte->status == ON_FRAME){
-        ASSERT (spte->ker_page != NULL);
         vm_frame_pin(spte->ker_page);
     }
 
@@ -199,7 +192,6 @@ bool vm_supt_mm_unmap(struct supplemental_page_table *supt, uint32_t *pagedir, v
             break;
         case FROM_FILESYS: break;
         default:
-            PANIC ("unreachable state");
     }
 
     hash_delete(&supt->page_hash, &spte->elem);
@@ -210,14 +202,11 @@ void vm_pin_page(struct supplemental_page_table *supt, void *page){
     struct supplemental_page_table_entry *spte = vm_supt_lookup(supt, page);
     if(spte == NULL)
         return;
-    ASSERT(spte->status == ON_FRAME);
     vm_frame_pin(spte->ker_page);
 }
 
 void vm_unpin_page(struct supplemental_page_table *supt, void *page){
     struct supplemental_page_table_entry * spte = vm_supt_lookup(supt, page);
-    if(spte == NULL)
-        PANIC ("request page is not exist");
     if(spte->status == ON_FRAME)
         vm_frame_unpin(spte->ker_page);
 }
@@ -237,7 +226,7 @@ static void spte_destroy_func(struct hash_elem *elem, void *aux UNUSED){
     struct supplemental_page_table_entry *spte = hash_entry(elem, struct supplemental_page_table_entry, elem);
     if(spte->ker_page != NULL){
         ASSERT (spte->status == ON_FRAME);
-        vm_frame_remove(spte->ker_page);
+        vm_frame_remove_entry(spte->ker_page);
     }
     else if(spte->status == ON_SWAP)
         vm_swap_free(spte->swap_idx);

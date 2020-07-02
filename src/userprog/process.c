@@ -26,7 +26,7 @@
 #ifndef VM
 #include "vm/frame.h"
 #include "vm/page.h"
-#define vm_frame_alloca(x, y) palloc_get_page(x)
+#define vm_frame_allocate(x, y) palloc_get_page(x)
 #define vm_frame_free(x) palloc_free_page(x)
 #endif
 
@@ -47,9 +47,9 @@ static void push_args(void** esp, const int argc, const char *argv[]);
    thread id, or TID_ERROR if the thread cannot be created. */
 tid_t
 // int
-process_execute (const char *file_name) 
+process_execute (const char *file_name)
 {
-  char *fn_copy;
+  char *fn_copy=NULL, *executing_name = NULL;
   tid_t tid;
 
   struct process_control_block *pcb = NULL;
@@ -59,26 +59,39 @@ process_execute (const char *file_name)
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
+  executing_name = palloc_get_page(0);
+  if(executing_name == NULL){
+      if(fn_copy)
+          palloc_free_page(fn_copy);
+      return TID_ERROR;
+  }
+  strlcpy(executing_name, file_name, PGSIZE);
+  char *args;
+  executing_name = strtok_r(executing_name, " ", &args);
   pcb = palloc_get_page(0);
   if (pcb == NULL) {
-    if (fn_copy)
-      palloc_free_page(fn_copy);
-    return TID_ERROR;
+      if (fn_copy)
+          palloc_free_page(fn_copy);
+      if (executing_name)
+          palloc_free_page(executing_name);
+      return TID_ERROR;
   }
-
+  pcb->args = fn_copy;
   pcb->tid = TID_ERROR;
   //pcb->child_fail_load = false;
+  pcb->related_thread = thread_current();
   pcb->waitingBy = false;
   pcb->exited = false;
   pcb->orphan = false;
+  pcb->retVal = -1;
   sema_init(&pcb->sema_waiting, 0);
   sema_init(&pcb->sema_syncPaSon, 0);
   // highlight: advised by pintos manual to call strtok_r,
   //            split 'echo x' into 'echo' ' x'
   //                  'echo x y' into 'echo' ' x y'
-  char *executing_name, *args;
-  executing_name = strtok_r(fn_copy, " ", &args);
-  pcb->args = args;
+
+
+
   /* Create a new thread to execute FILE_NAME. */
   // tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
   tid = thread_create (executing_name, PRI_DEFAULT, start_process, pcb);
@@ -88,15 +101,19 @@ process_execute (const char *file_name)
   if (tid == TID_ERROR){
     if (fn_copy)
       palloc_free_page(fn_copy);
+    if(executing_name)
+      palloc_free_page(executing_name);
     if (pcb)
       palloc_free_page(pcb);
     return TID_ERROR;
   }
 
   sema_down(&pcb->sema_syncPaSon);
+  if(fn_copy)
+    palloc_free_page(fn_copy);
   if (pcb->tid != TID_ERROR)
     list_push_back(&thread_current()->child_threads, &pcb->child_elem);
-  palloc_free_page(fn_copy);
+  palloc_free_page(executing_name);
   _DEBUG_PRINTF("want to execute: %s at %d\n", file_name, tid);
   return pcb->tid;
 }
@@ -107,34 +124,33 @@ static void
 start_process (void *_pcb)
 {
   struct process_control_block* pcb = _pcb;
-  char *file_name = pcb->args;
-  struct intr_frame if_;
-  bool success;
-
-  /* Initialize interrupt frame and load executable. */
-  memset (&if_, 0, sizeof if_);
-  if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
-  if_.cs = SEL_UCSEG;
-  if_.eflags = FLAG_IF | FLAG_MBS;
-  success = load (file_name, &if_.eip, &if_.esp);
+  char *file_name = (char*)pcb->args;
   /* If load failed, quit. */
   // split args, still don't know why it fails to assign tokens in setup_stac,k
   char *args = file_name;
-  char *tokens[32];
+  const char **tokens = (const char **)palloc_get_page(0);
   int argc = 0;
-  tokens[argc++] = thread_current()->name;
+  //tokens[argc++] = thread_current()->name;
   char *token, *save_ptr;
   // arg tokens
-  for ( token = strtok_r(args, " ", &save_ptr); 
+  for ( token = strtok_r(args, " ", &save_ptr);
         token != NULL;
         token = strtok_r(NULL, " ", &save_ptr))
   {
     tokens[argc++] = token;
   }
+    struct intr_frame if_;
+    bool success=false;
 
-  if (argc > 32)
-    success = false;
-  if (success) 
+    /* Initialize interrupt frame and load executable. */
+    memset (&if_, 0, sizeof if_);
+    if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
+    if_.cs = SEL_UCSEG;
+    if_.eflags = FLAG_IF | FLAG_MBS;
+    success = load (file_name, &if_.eip, &if_.esp);
+//  if (argc > 32)
+//    success = false;
+  if (success)
     push_args(&if_.esp, argc, tokens);
   thread_current()->pcb = pcb;
   pcb->tid = (success) ? thread_current()->tid : TID_ERROR;
@@ -580,7 +596,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
           return false;
 #else
       /* Get a page of memory. */
-      uint8_t *kpage = palloc_get_page (PAL_USER);
+      uint8_t *kpage = vm_frame_allocate(PAL_USER, upage);
       if (kpage == NULL)
         return false;
 
@@ -618,14 +634,15 @@ void push_args(void** esp, const int argc, const char *argv[]) {
   // push tokens from back and get pointers
   uint32_t *argv_ptrs[64];
   int i = 0, strlength = 0;
-  for (i = argc - 1; i >= 0; i--) {
+  for (i = 0; i <argc; i++) {
     strlength = strlen(argv[i]) + 1;
     *esp -= strlength;
     memcpy(*esp, argv[i], strlength);
     argv_ptrs[i] = *esp;
   }
   // align
-  *esp -= 4 - (strlength % 4);
+  //*esp -= 4 - (strlength % 4);
+  *esp=(void*)((unsigned int)(*esp)&0xfffffffc);
   // push pointers from back
   // push NULL pointer for argv[argc]
   *esp -= 4;
@@ -657,7 +674,7 @@ setup_stack (void **esp)
   uint8_t *kpage;
   bool success = false;
 
-  kpage = palloc_get_page (PAL_USER | PAL_ZERO);  // get the page for stack
+  kpage = vm_frame_allocate (PAL_USER | PAL_ZERO, PHYS_BASE-PGSIZE);  // get the page for stack
   if (kpage != NULL) 
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true); // map the page

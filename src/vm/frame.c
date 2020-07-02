@@ -44,7 +44,7 @@ void vm_frame_init(){
     clk_pointer = NULL;
 }
 
-void *vm_frame_alloca(enum palloc_flags flags, void *usr_page){
+void *vm_frame_allocate(enum palloc_flags flags, void *usr_page){
     lock_acquire(&frame_lock);
     void *frame_page = palloc_get_page(PAL_USER|flags);
     if(frame_page == NULL){
@@ -89,7 +89,7 @@ void vm_frame_free(void* ker_page){
     lock_release(&frame_lock);
 }
 
-void vm_frame_remove(void* ker_page){
+void vm_frame_remove_entry(void* ker_page){
     lock_acquire(&frame_lock);
     vm_frame_do_free(ker_page, false);
     lock_release(&frame_lock);
@@ -101,6 +101,7 @@ static void vm_frame_set_pinned(void *ker_page, bool new_value){
     tmp.ker_page = ker_page;
     struct hash_elem *h_elem = hash_find(&frame_hash,&(tmp.h_elem));
     if(h_elem == NULL){
+        //printf("%d", 1);
         PANIC("The frame to be pinned/unpinned does not exist");
     }
     struct frame_table_entry *f;

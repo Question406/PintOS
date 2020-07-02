@@ -1,5 +1,6 @@
 #include "userprog/syscall.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <syscall-nr.h>
 #include "threads/interrupt.h"
 #include "threads/thread.h"
@@ -35,7 +36,7 @@ static void sys_close(int fd);
 
 #ifdef VM
 bool sys_munmap(mmapid_t);
-mmapid_t sys_mmap(int *fd, void *);
+mmapid_t sys_mmap(int fd, void *);
 
 void preload_pin_pages(const void *, size_t);
 void preload_unpin_pages(const void *, size_t);
@@ -268,7 +269,9 @@ sys_exec(const char *cmd_line){
   check_valid_ptr(ptr);
   // if (!is_user_vaddr(cmd_line))
   //   sys_exit(-1);
+  lock_acquire(&fileSys_lock);
   pid_t pid = process_execute(cmd_line);
+  lock_release(&fileSys_lock);
   return pid;
 }
 
@@ -313,7 +316,7 @@ sys_create (const char *file, unsigned initial_size)
 
 static int 
 sys_wait (pid_t pid) {
-  process_wait(pid);
+  return process_wait(pid);
 }
 
 static bool 
@@ -523,7 +526,7 @@ bool sys_munmap(mmapid_t mid){
     return true;
 }
 
-mmapid_t sys_mmap(int *fd, void *usr_page){
+mmapid_t sys_mmap(int fd, void *usr_page){
     if(usr_page == NULL || pg_ofs(usr_page) != 0)
         return -1;
     if(fd <= 1)

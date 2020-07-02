@@ -11,9 +11,9 @@
 #include"threads/palloc.h"
 
 void vm_frame_init(void);
-void *vm_frame_alloca(enum palloc_flags flags, void *usr_page);
+void *vm_frame_allocate(enum palloc_flags flags, void *usr_page);
 void vm_frame_free(void*);
-void vm_frame_remove(void*);
+void vm_frame_remove_entry(void*);
 void vm_frame_pin(void *ker_page);
 void vm_frame_unpin(void *ker_page);
 

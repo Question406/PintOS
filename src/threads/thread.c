@@ -800,6 +800,7 @@ thread_update_priority_mlfqs(struct thread* to_update)
   to_update->priority = tmp_priority;
 }
 
+#ifdef USERPROG
 /* get specific child thread*/
 struct process_control_block* 
 get_child_thread(struct thread* cur, tid_t child_id)
@@ -843,3 +844,4 @@ void traverseChild(struct thread* cur) {
   printf("[DEBUG] %s traverseChild end\n", cur->name);  
   // lock_release(&cur->child_thread_lock); 
 }
+#endif
