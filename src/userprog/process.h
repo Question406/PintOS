@@ -13,7 +13,7 @@ struct process_control_block {
     tid_t tid;
     char* args;
     int retVal;
-    //bool child_fail_load;
+    bool child_fail_load;
     bool waitingBy;
     bool exited;
     bool orphan;

@@ -76,28 +76,22 @@ process_execute (const char *file_name)
           palloc_free_page(executing_name);
       return TID_ERROR;
   }
-  pcb->args = fn_copy;
+  pcb->args = args;
   pcb->tid = TID_ERROR;
-  //pcb->child_fail_load = false;
   pcb->related_thread = thread_current();
   pcb->waitingBy = false;
   pcb->exited = false;
   pcb->orphan = false;
+  pcb->child_fail_load = false;
   pcb->retVal = -1;
   sema_init(&pcb->sema_waiting, 0);
   sema_init(&pcb->sema_syncPaSon, 0);
   // highlight: advised by pintos manual to call strtok_r,
   //            split 'echo x' into 'echo' ' x'
   //                  'echo x y' into 'echo' ' x y'
-
-
-
   /* Create a new thread to execute FILE_NAME. */
   // tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
   tid = thread_create (executing_name, PRI_DEFAULT, start_process, pcb);
-  // printf("[DEBUG] %s hi\n", thread_current()->name);
-  // traverseChild(thread_current());
-  // if (tid == TID_ERROR || pcb->child_fail_load) {          // if failed, free the page
   if (tid == TID_ERROR){
     if (fn_copy)
       palloc_free_page(fn_copy);
@@ -107,11 +101,10 @@ process_execute (const char *file_name)
       palloc_free_page(pcb);
     return TID_ERROR;
   }
-
   sema_down(&pcb->sema_syncPaSon);
   if(fn_copy)
     palloc_free_page(fn_copy);
-  if (pcb->tid != TID_ERROR)
+  if (!pcb->child_fail_load) // child thread success
     list_push_back(&thread_current()->child_threads, &pcb->child_elem);
   palloc_free_page(executing_name);
   _DEBUG_PRINTF("want to execute: %s at %d\n", file_name, tid);
@@ -128,9 +121,9 @@ start_process (void *_pcb)
   /* If load failed, quit. */
   // split args, still don't know why it fails to assign tokens in setup_stac,k
   char *args = file_name;
-  const char **tokens = (const char **)palloc_get_page(0);
+  char * tokens[64];
   int argc = 0;
-  //tokens[argc++] = thread_current()->name;
+  tokens[argc++] = thread_current()->name;
   char *token, *save_ptr;
   // arg tokens
   for ( token = strtok_r(args, " ", &save_ptr);
@@ -154,9 +147,11 @@ start_process (void *_pcb)
     push_args(&if_.esp, argc, tokens);
   thread_current()->pcb = pcb;
   pcb->tid = (success) ? thread_current()->tid : TID_ERROR;
+  pcb->child_fail_load = (success) ? false : true;
   pcb->related_thread = thread_current();
 
   sema_up(&(pcb->sema_syncPaSon));
+  // palloc_free_page(tokens);
   if (!success)  {
     _DEBUG_PRINTF("%d call exit\n", pcb->tid);
     sys_exit(-1);
@@ -634,7 +629,7 @@ void push_args(void** esp, const int argc, const char *argv[]) {
   // push tokens from back and get pointers
   uint32_t *argv_ptrs[64];
   int i = 0, strlength = 0;
-  for (i = 0; i <argc; i++) {
+  for (i = 0; i < argc; i++) {
     strlength = strlen(argv[i]) + 1;
     *esp -= strlength;
     memcpy(*esp, argv[i], strlength);

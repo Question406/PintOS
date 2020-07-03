@@ -144,7 +144,7 @@ bool vm_load_page(struct supplemental_page_table *supt, uint32_t *pagedir, void 
             }
             can_write = spte->can_write;
             break;
-        default:;
+        default: ;
     }
 
     if(!pagedir_set_page(pagedir, usr_page, frame_page, can_write)){
