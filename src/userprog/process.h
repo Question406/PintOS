@@ -9,6 +9,7 @@ int process_wait (tid_t);
 void process_exit (void);
 void process_activate (void);
 
+#ifdef USERPROG
 struct process_control_block {
     tid_t tid;
     char* args;
@@ -22,6 +23,7 @@ struct process_control_block {
     struct semaphore sema_syncPaSon;
     struct list_elem child_elem;
 };
+#endif
 
 
 #ifdef VM

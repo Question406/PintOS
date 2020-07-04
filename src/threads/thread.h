@@ -125,6 +125,8 @@ struct thread
    int nice_val;                       /* nice value for mlfqs */
    int recent_cpu;                     /* recent_cpu for mlfqs */
 
+   struct dir *cwd;
+
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
@@ -186,6 +188,7 @@ struct file_descriptor {
    int fdID;
    struct file *file;
    struct list_elem elem;
+   struct dir* dir;
 };
 
 #endif /* threads/thread.h */

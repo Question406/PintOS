@@ -144,7 +144,8 @@ bool vm_load_page(struct supplemental_page_table *supt, uint32_t *pagedir, void 
             }
             can_write = spte->can_write;
             break;
-        default: ;
+        default:
+	     break;
     }
 
     if(!pagedir_set_page(pagedir, usr_page, frame_page, can_write)){
@@ -191,7 +192,8 @@ bool vm_supt_mm_unmap(struct supplemental_page_table *supt, uint32_t *pagedir, v
             pagedir_clear_page(pagedir, spte->usr_page);
             break;
         case FROM_FILESYS: break;
-        default:;
+        default:
+		break;
     }
 
     hash_delete(&supt->page_hash, &spte->elem);

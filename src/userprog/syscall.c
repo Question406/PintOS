@@ -8,12 +8,22 @@
 #include "threads/synch.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
+#include "filesys/inode.h"
+#include "filesys/directory.h"
 #include "lib/stdio.h"
 
 #include "userprog/process.h"
 
 #ifdef VM
 #include "vm/page.h"
+#endif
+
+#ifdef FILESYS
+bool sys_chdir(const char *name);
+bool sys_mkdir(const char *name);
+bool sys_readdir(int fd, char *name);
+bool sys_isdir(int fd);
+int sys_inumber(int fd);
 #endif
 
 static void syscall_handler (struct intr_frame *);
@@ -49,11 +59,12 @@ static int32_t get_user (const uint8_t *uaddr);
 static void check_valid_ptr(const uint8_t *uaddr);
 static bool put_user (uint8_t *udst, uint8_t byte);
 
-static struct file_descriptor* get_file_descriptor(struct thread* cur, int fd);
+static struct file_descriptor* get_file_descriptor(struct thread* cur, int fd, int type);
+//type = 0 for all  1 for file 2 for directory
 
 struct lock fileSys_lock;
 
-static struct file_descriptor* get_file_descriptor(struct thread* cur, int fd){
+static struct file_descriptor* get_file_descriptor(struct thread* cur, int fd, int type){
   if (fd < 3) 
     return NULL; // should not happen
   struct list_elem *elem = NULL;
@@ -65,7 +76,11 @@ static struct file_descriptor* get_file_descriptor(struct thread* cur, int fd){
       struct file_descriptor *fileD = 
       list_entry(elem, struct file_descriptor, elem);
       if(fileD->fdID == fd) {
-        return fileD;
+        if (fileD->dir != NULL && type != 1) 
+          return fileD;
+        else if (fileD->dir == NULL && type != 2)
+          return fileD;
+        return NULL;
       }
     } 
   }
@@ -240,6 +255,50 @@ syscall_handler (struct intr_frame *f UNUSED)
         break;
       }
 #endif
+#ifdef FILESYS
+    case SYS_CHDIR:
+    {
+      const char *name;
+      mem_read(f->esp + 4, &name, sizeof(name));
+      f->eax = sys_chdir(name);
+      break;
+    }
+    case SYS_MKDIR:
+    {
+      const char *name;
+      mem_read(f->esp + 4, &name, sizeof(name));
+     // printf("---SYS_MKDIR---%s\n", name);
+      f->eax = sys_mkdir(name);
+      break;
+    }
+    case SYS_READDIR:
+    {
+      int fd;
+      char *name;
+      mem_read(f->esp + 4, &fd, sizeof(fd));
+      mem_read(f->esp + 8, &name, sizeof(name));
+      f->eax = sys_readdir(fd, name);
+      break;
+    }
+    case SYS_ISDIR:
+    {
+      int fd;
+      mem_read(f->esp + 4, &fd, sizeof(fd));
+      f->eax = sys_isdir(fd);
+      break;
+    }
+    case SYS_INUMBER:
+    {
+      int fd;
+      mem_read(f->esp + 4, &fd, sizeof(fd));
+      f->eax = sys_inumber(fd);
+      break;
+    }
+#endif
+    default:
+      printf("[ERROR], forget add something!\n");
+      sys_exit(-1);
+      break;
   }
 }
 
@@ -287,7 +346,7 @@ sys_write(int fd, const void *buffer, unsigned size) {
     res = size;
   }
   else { // file
-    struct file_descriptor* file = get_file_descriptor(thread_current(), fd);
+    struct file_descriptor* file = get_file_descriptor(thread_current(), fd, 1);
     if (file && file->file) //file should be opened by cur thread
     {
 #ifdef VM
@@ -347,6 +406,14 @@ sys_open(const char* file) {
   }
   // set file_descriptor
   file_desc->file = File;
+
+  //judge whether a directory
+  struct inode *inode = file_get_inode(file_desc->file);
+  if (inode != NULL && inode_dir(inode)) 
+    file_desc -> dir = dir_open(inode_reopen(inode));
+  else 
+    file_desc -> dir = NULL;
+
   struct list* opened_files = &thread_current()->opened_files;
   if (list_empty(opened_files)) // first opened file
     file_desc->fdID = 3; // 0, 1, 2 reserved
@@ -366,7 +433,7 @@ done:
 static int 
 sys_filesize(int fd) { // fd should be opend by cur thread
   lock_acquire (&fileSys_lock);
-  struct file_descriptor* file = get_file_descriptor(thread_current(), fd);
+  struct file_descriptor* file = get_file_descriptor(thread_current(), fd, 0);
   int res = -1;
   if (file != NULL) 
     res = file_length(file->file);
@@ -392,7 +459,7 @@ sys_read(int fd, void *buffer, unsigned size) {
     res = size;
   } else {
     // fd should be opened
-    struct file_descriptor* fileD = get_file_descriptor(thread_current(), fd); 
+    struct file_descriptor* fileD = get_file_descriptor(thread_current(), fd, 0); 
     if (fileD == NULL || fileD->file == NULL)
       res = -1;
     else {
@@ -412,7 +479,7 @@ sys_read(int fd, void *buffer, unsigned size) {
 static void 
 sys_seek(int fd, unsigned position) {
   lock_acquire(&fileSys_lock);
-  struct file_descriptor* fileD = get_file_descriptor(thread_current(), fd); 
+  struct file_descriptor* fileD = get_file_descriptor(thread_current(), fd, 0); 
   if (fileD && fileD->file) {
     file_seek(fileD->file, position);
   } 
@@ -426,7 +493,7 @@ sys_seek(int fd, unsigned position) {
 static unsigned 
 sys_tell(int fd) {
   lock_acquire(&fileSys_lock);
-  struct file_descriptor* fileD = get_file_descriptor(thread_current(), fd); 
+  struct file_descriptor* fileD = get_file_descriptor(thread_current(), fd, 0); 
   unsigned res = -1;
   if (fileD && fileD->file) 
     res = file_tell(fileD->file);
@@ -436,10 +503,11 @@ sys_tell(int fd) {
 
 static void 
 sys_close(int fd) {
-  struct file_descriptor* file = get_file_descriptor(thread_current(), fd);
+  struct file_descriptor* file = get_file_descriptor(thread_current(), fd, 0);
   lock_acquire (&fileSys_lock);
   if (file) {
     file_close(file->file);
+    if (file->dir) dir_close(file->dir);
     list_remove(&(file->elem));
     palloc_free_page(file);
   }
@@ -535,7 +603,7 @@ mmapid_t sys_mmap(int fd, void *usr_page){
     lock_acquire(&fileSys_lock);
 
     struct file* file = NULL;
-    struct file_descriptor *fileD = get_file_descriptor(thread_current(), fd);
+    struct file_descriptor *fileD = get_file_descriptor(thread_current(), fd, 0);
     if(fileD && fileD->file)
         file = file_reopen(fileD->file);
     if(file == NULL){
@@ -602,4 +670,113 @@ static struct mmap_desc* find_mmap_desc(struct thread* t, mmapid_t fd){
     }
     return NULL;
 }
+#endif
+
+#ifdef FILESYS
+bool sys_chdir(const char *name) 
+{
+   // printf("---change directory to %s---\n",name);
+    lock_acquire(&fileSys_lock);
+    struct dir *dir = dir_open_path(name);
+    if (dir == NULL) 
+    {
+      lock_release(&fileSys_lock);
+      return false;
+    }
+    struct thread *t = thread_current();
+    dir_close(t->cwd);
+    t->cwd = dir;
+    lock_release(&fileSys_lock);
+    return true;
+}
+
+bool sys_mkdir(const char *name) 
+{
+  //printf("makedir!\n");
+  lock_acquire(&fileSys_lock);
+  int len = strlen(name);
+  if (len == 0) 
+  {
+    lock_release(&fileSys_lock);
+    return false;
+  }
+  char directory[len], filename[len];
+  parse_path_name(name, directory, filename);
+  struct dir *dir = dir_open_path(directory);
+  block_sector_t inode_sector = 0;
+  bool t2 = free_map_allocate (1, &inode_sector);
+  bool t3 = inode_create (inode_sector, 0, 1);
+  bool t4 = dir_add (dir, filename, inode_sector, 1);
+ // printf("---name:   %s\n", name);
+ // printf("---directory:   %s\n", directory);
+ // printf("---filename:   %s\n", filename);
+  //printf("-----%d %d %d-----\n", t2 ,t3, t4);
+  bool success = (dir != NULL
+                  && t2
+                  && t3
+                  && t4);
+  if (!success && inode_sector != 0)
+    free_map_release(inode_sector, 1);
+  dir_close(dir);
+  lock_release(&fileSys_lock);
+  return success;
+}
+
+bool sys_readdir(int fd, char *name)
+{
+  lock_acquire(&fileSys_lock);
+  struct file_descriptor* fdr = get_file_descriptor(thread_current(), fd, 2);
+  if (fdr == NULL) 
+  {
+    lock_release(&fileSys_lock);
+    return false;
+  }
+  struct inode *inode = file_get_inode(fdr->file);
+  if (inode == NULL) 
+  {
+    lock_release(&fileSys_lock);
+    return false;
+  }
+  if (!inode_dir(inode)) 
+  {
+    lock_release(&fileSys_lock);
+    return false;
+  }
+  struct dir *dir = fdr -> dir;
+  ASSERT(dir != NULL);
+  bool tmp = dir_readdir(dir, name);
+  lock_release(&fileSys_lock);
+  return tmp;
+}
+
+bool sys_isdir(int fd) 
+{
+  lock_acquire(&fileSys_lock);
+  struct file_descriptor* fdr = get_file_descriptor(thread_current(), fd , 0);
+  if (fdr == NULL) 
+  {
+    lock_release(&fileSys_lock);
+    return false;
+  }
+  struct inode *inode = file_get_inode(fdr->file);
+  if (inode == NULL) 
+  {
+    lock_release(&fileSys_lock);
+    return false;
+  }
+  lock_release(&fileSys_lock);
+  return inode_dir(inode);
+}
+
+int sys_inumber(int fd) 
+{
+  lock_acquire(&fileSys_lock);
+  struct file_descriptor* fdr = get_file_descriptor(thread_current(), fd, 0);
+  struct inode * inode = file_get_inode(fdr->file);
+  ASSERT(inode != NULL);
+  int ret = inode_num(inode);
+  lock_release(&fileSys_lock);
+  return ret;
+}
+
 #endif
