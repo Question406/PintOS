@@ -1,0 +1,14 @@
+FAIL
+Extracted file system contents are not correct.
+a/b is missing from the file system.
+dir-rm-parent is missing from the file system.
+
+Actual contents of file system:
+a: directory
+tar: 43396-byte file
+
+Expected contents of file system:
+a: directory
+a/b: directory
+dir-rm-parent: 36368-byte file
+tar: 43396-byte file

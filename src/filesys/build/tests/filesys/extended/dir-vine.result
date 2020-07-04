@@ -1,0 +1,24 @@
+FAIL
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hdb1 (sector=3222310924, size=4096)
+Call stack: 0xc002a591 0xc0025cca 0xc0025ce4 0xc0030541 0xc0031656 0xc0030be4 0xc002fa9e 0xc002eb3c 0xc002e554 0xc00223d2 0xc00225fc 0x804ac0b 0x80482d3 0x8048d97 0x8048dc8
+Translation of call stack:
+In kernel.o:
+0xc002a591: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0025cca: check_sector (...../../devices/block.c:114)
+0xc0025ce4: block_read (...../../devices/block.c:123)
+0xc0030541: buffer_cache_read (.../../../filesys/cache.c:94)
+0xc0031656: inode_open (...../../filesys/inode.c:255)
+0xc0030be4: dir_lookup (..../filesys/directory.c:221)
+0xc002fa9e: filesys_open (..../../filesys/filesys.c:94)
+0xc002eb3c: sys_open (...../userprog/syscall.c:401)
+0xc002e554: syscall_handler (...../userprog/syscall.c:167)
+0xc00223d2: intr_handler (..../threads/interrupt.c:367)
+0xc00225fc: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/extended/dir-vine:
+0x0804ac0b: open (...../lib/user/syscall.c:105)
+0x080482d3: test_main (...ys/extended/dir-vine.c:55)
+0x08048d97: main (...ild/../../tests/main.c:13)
+0x08048dc8: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.

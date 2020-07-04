@@ -1,0 +1,20 @@
+warning: can't find squish-pty, so terminal input will fail
+bochs -q
+Pintos hda1
+Loading............
+Kernel command line: -q run alarm-negative
+Pintos booting with 4,096 kB RAM...
+383 pages available in kernel pool.
+383 pages available in user pool.
+Calibrating timer...  102,400 loops/s.
+Boot complete.
+Executing 'alarm-negative':
+(alarm-negative) begin
+(alarm-negative) PASS
+(alarm-negative) end
+Execution of 'alarm-negative' complete.
+Timer: 61 ticks
+Thread: 0 idle ticks, 65 kernel ticks, 0 user ticks
+Console: 405 characters output
+Keyboard: 0 keys pressed
+Powering off...

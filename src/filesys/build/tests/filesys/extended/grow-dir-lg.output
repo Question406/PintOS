@@ -1,0 +1,90 @@
+Copying tests/filesys/extended/grow-dir-lg to scratch partition...
+Copying tests/filesys/extended/tar to scratch partition...
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/xPAO1wz5TQ.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q -f extract run grow-dir-lg
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 1,008 sectors (504 kB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 161 sectors (80 kB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'grow-dir-lg' into the file system...
+Putting 'tar' into the file system...
+Erasing ustar archive...
+Executing 'grow-dir-lg':
+(grow-dir-lg) begin
+(grow-dir-lg) mkdir /x
+(grow-dir-lg) creating and checking "/x/file0"
+(grow-dir-lg) creating and checking "/x/file1"
+(grow-dir-lg) creating and checking "/x/file2"
+(grow-dir-lg) creating and checking "/x/file3"
+(grow-dir-lg) creating and checking "/x/file4"
+(grow-dir-lg) creating and checking "/x/file5"
+(grow-dir-lg) creating and checking "/x/file6"
+(grow-dir-lg) creating and checking "/x/file7"
+(grow-dir-lg) creating and checking "/x/file8"
+(grow-dir-lg) creating and checking "/x/file9"
+(grow-dir-lg) creating and checking "/x/file10"
+(grow-dir-lg) creating and checking "/x/file11"
+(grow-dir-lg) creating and checking "/x/file12"
+(grow-dir-lg) creating and checking "/x/file13"
+(grow-dir-lg) creating and checking "/x/file14"
+(grow-dir-lg) creating and checking "/x/file15"
+(grow-dir-lg) creating and checking "/x/file16"
+(grow-dir-lg) creating and checking "/x/file17"
+(grow-dir-lg) creating and checking "/x/file18"
+(grow-dir-lg) creating and checking "/x/file19"
+(grow-dir-lg) creating and checking "/x/file20"
+(grow-dir-lg) creating and checking "/x/file21"
+(grow-dir-lg) creating and checking "/x/file22"
+(grow-dir-lg) creating and checking "/x/file23"
+(grow-dir-lg) creating and checking "/x/file24"
+(grow-dir-lg) creating and checking "/x/file25"
+(grow-dir-lg) creating and checking "/x/file26"
+(grow-dir-lg) creating and checking "/x/file27"
+(grow-dir-lg) creating and checking "/x/file28"
+(grow-dir-lg) creating and checking "/x/file29"
+(grow-dir-lg) creating and checking "/x/file30"
+(grow-dir-lg) creating and checking "/x/file31"
+(grow-dir-lg) creating and checking "/x/file32"
+(grow-dir-lg) creating and checking "/x/file33"
+(grow-dir-lg) creating and checking "/x/file34"
+(grow-dir-lg) creating and checking "/x/file35"
+(grow-dir-lg) creating and checking "/x/file36"
+(grow-dir-lg) creating and checking "/x/file37"
+(grow-dir-lg) creating and checking "/x/file38"
+(grow-dir-lg) creating and checking "/x/file39"
+(grow-dir-lg) creating and checking "/x/file40"
+(grow-dir-lg) creating and checking "/x/file41"
+(grow-dir-lg) creating and checking "/x/file42"
+(grow-dir-lg) creating and checking "/x/file43"
+(grow-dir-lg) creating and checking "/x/file44"
+(grow-dir-lg) creating and checking "/x/file45"
+(grow-dir-lg) creating and checking "/x/file46"
+(grow-dir-lg) creating and checking "/x/file47"
+(grow-dir-lg) creating and checking "/x/file48"
+(grow-dir-lg) creating and checking "/x/file49"
+(grow-dir-lg) end
+grow-dir-lg: exit(0)
+Execution of 'grow-dir-lg' complete.
+Timer: 121 ticks
+Thread: 41 idle ticks, 38 kernel ticks, 42 user ticks
+hdb1 (filesys): 456 reads, 425 writes
+hda2 (scratch): 160 reads, 2 writes
+Console: 3424 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

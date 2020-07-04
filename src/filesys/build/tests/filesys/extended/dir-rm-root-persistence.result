@@ -1,0 +1,12 @@
+FAIL
+Extracted file system contents are not correct.
+dir-rm-root is missing from the file system.
+
+Actual contents of file system:
+a: 243-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+a: 243-byte file
+dir-rm-root: 36148-byte file
+tar: 43396-byte file

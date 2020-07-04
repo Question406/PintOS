@@ -1,0 +1,14 @@
+FAIL
+Extracted file system contents are not correct.
+logfile is missing from the file system.
+syn-rw is missing from the file system.
+
+Actual contents of file system:
+child-syn-rw: 40512-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+child-syn-rw: 40512-byte file
+logfile: 4096-byte file
+syn-rw: 36840-byte file
+tar: 43396-byte file

@@ -1,0 +1,57 @@
+Copying tests/vm/mmap-inherit to scratch partition...
+Copying ../../tests/vm/sample.txt to scratch partition...
+Copying tests/vm/child-inherit to scratch partition...
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/H_darsbmxJ.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg.............................
+.
+Kernel command line: -q -f extract run mmap-inherit
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 244 sectors (122 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 149 sectors (74 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'mmap-inherit' into the file system...
+Putting 'sample.txt' into the file system...
+Putting 'child-inherit' into the file system...
+Erasing ustar archive...
+Executing 'mmap-inherit':
+(mmap-inherit) begin
+(mmap-inherit) open "sample.txt"
+(mmap-inherit) mmap "sample.txt"
+(mmap-inherit) exec "child-inherit"
+(child-inherit) begin
+Page fault at 0x54321000: not present error writing page in user context.
+child-inherit: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x8049dee
+ cr2=54321000 error=00000006
+ eax=54321000 ebx=00000000 ecx=00000003 edx=00000000
+ esi=00000000 edi=00000000 esp=bfffff60 ebp=bfffff78
+ cs=001b ds=0023 es=0023 ss=0023
+child-inherit: exit(-1)
+(mmap-inherit) checking that mmap'd file still has same data
+(mmap-inherit) end
+mmap-inherit: exit(0)
+Execution of 'mmap-inherit' complete.
+Timer: 79 ticks
+Thread: 36 idle ticks, 36 kernel ticks, 8 user ticks
+hda2 (filesys): 353 reads, 293 writes
+hda3 (scratch): 148 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1677 characters output
+Keyboard: 0 keys pressed
+Exception: 10 page faults
+Powering off...

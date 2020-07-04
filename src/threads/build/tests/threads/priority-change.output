@@ -1,0 +1,24 @@
+warning: can't find squish-pty, so terminal input will fail
+bochs -q
+Pintos hda1
+Loading............
+Kernel command line: -q run priority-change
+Pintos booting with 4,096 kB RAM...
+383 pages available in kernel pool.
+383 pages available in user pool.
+Calibrating timer...  102,400 loops/s.
+Boot complete.
+Executing 'priority-change':
+(priority-change) begin
+(priority-change) Creating a high-priority thread 2.
+(priority-change) Thread 2 now lowering priority.
+(priority-change) Thread 2 should have just lowered its priority.
+(priority-change) Thread 2 exiting.
+(priority-change) Thread 2 should have just exited.
+(priority-change) end
+Execution of 'priority-change' complete.
+Timer: 109 ticks
+Thread: 0 idle ticks, 114 kernel ticks, 0 user ticks
+Console: 647 characters output
+Keyboard: 0 keys pressed
+Powering off...

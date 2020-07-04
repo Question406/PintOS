@@ -1,0 +1,56 @@
+Copying tests/filesys/extended/grow-seq-lg to scratch partition...
+Copying tests/filesys/extended/tar to scratch partition...
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/SlhRyJxLSo.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q -f extract run grow-seq-lg
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 1,008 sectors (504 kB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 160 sectors (80 kB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'grow-seq-lg' into the file system...
+Putting 'tar' into the file system...
+Erasing ustar archive...
+Executing 'grow-seq-lg':
+(grow-seq-lg) begin
+(grow-seq-lg) create "testme"
+(grow-seq-lg) open "testme"
+(grow-seq-lg) writing "testme"
+(grow-seq-lg) close "testme"
+(grow-seq-lg) open "testme" for verification
+(grow-seq-lg) 472 bytes read starting at offset 62976 in "testme" differ from expected.
+(grow-seq-lg) Showing first differing 64 bytes.
+(grow-seq-lg) Data actually read:
+0000f600  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+0000f610  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+0000f620  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+0000f630  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+(grow-seq-lg) Expected data:
+0000f600  11 6e ad 31 98 20 88 7e-17 49 ed 75 88 99 b2 36 |.n.1. .~.I.u...6|
+0000f610  1d 86 72 81 6b 57 e9 6b-08 f2 85 f3 0a 84 1a 99 |..r.kW.k........|
+0000f620  3e 56 31 c3 41 97 d7 bb-a8 95 a7 cf 75 f3 ec d5 |>V1.A.......u...|
+0000f630  fd 74 76 d2 cc 50 f1 a0-56 be 9a 95 74 d4 88 25 |.tv..P..V...t..%|
+(grow-seq-lg) 472 bytes read starting at offset 62976 in "testme" differ from expected: FAILED
+grow-seq-lg: exit(1)
+Execution of 'grow-seq-lg' complete.
+Timer: 100 ticks
+Thread: 40 idle ticks, 40 kernel ticks, 20 user ticks
+hdb1 (filesys): 623 reads, 465 writes
+hda2 (scratch): 159 reads, 2 writes
+Console: 2066 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

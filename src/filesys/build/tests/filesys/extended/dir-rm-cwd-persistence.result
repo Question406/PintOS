@@ -1,0 +1,10 @@
+FAIL
+Extracted file system contents are not correct.
+dir-rm-cwd is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+
+Expected contents of file system:
+dir-rm-cwd: 38520-byte file
+tar: 43396-byte file

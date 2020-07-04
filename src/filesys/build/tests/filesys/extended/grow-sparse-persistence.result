@@ -1,0 +1,12 @@
+FAIL
+Extracted file system contents are not correct.
+grow-sparse is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+testfile: 76543-byte file
+
+Expected contents of file system:
+grow-sparse: 36564-byte file
+tar: 43396-byte file
+testfile: 76543-byte file

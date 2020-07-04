@@ -1,0 +1,10 @@
+FAIL
+Extracted file system contents are not correct.
+dir-rmdir is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+
+Expected contents of file system:
+dir-rmdir: 36212-byte file
+tar: 43396-byte file

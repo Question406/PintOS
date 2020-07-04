@@ -1,0 +1,46 @@
+Copying tests/filesys/extended/grow-file-size to scratch partition...
+Copying tests/filesys/extended/tar to scratch partition...
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/UO29ZiBuYn.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q -f extract run grow-file-size
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 1,008 sectors (504 kB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 161 sectors (80 kB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'grow-file-size' into the file system...
+Putting 'tar' into the file system...
+Erasing ustar archive...
+Executing 'grow-file-size':
+(grow-file-size) begin
+(grow-file-size) create "testfile"
+(grow-file-size) open "testfile"
+(grow-file-size) writing "testfile"
+(grow-file-size) close "testfile"
+(grow-file-size) open "testfile" for verification
+(grow-file-size) verified contents of "testfile"
+(grow-file-size) close "testfile"
+(grow-file-size) end
+grow-file-size: exit(0)
+Execution of 'grow-file-size' complete.
+Timer: 78 ticks
+Thread: 45 idle ticks, 29 kernel ticks, 5 user ticks
+hdb1 (filesys): 359 reads, 328 writes
+hda2 (scratch): 160 reads, 2 writes
+Console: 1301 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

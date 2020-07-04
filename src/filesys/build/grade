@@ -1,0 +1,2151 @@
+warning: test tests/userprog/sc-boundary-3 doesn't count for grading
+warning: test tests/userprog/exec-bound doesn't count for grading
+warning: test tests/userprog/exec-bound-2 doesn't count for grading
+warning: test tests/userprog/exec-bound-3 doesn't count for grading
+TOTAL TESTING SCORE: 72.9%
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+SUMMARY BY TEST SET
+
+Test Set                                      Pts Max  % Ttl  % Max
+--------------------------------------------- --- --- ------ ------
+tests/filesys/extended/Rubric.functionality    26/ 34  22.9%/ 30.0%
+tests/filesys/extended/Rubric.robustness       10/ 10  15.0%/ 15.0%
+tests/filesys/extended/Rubric.persistence       0/ 23   0.0%/ 20.0%
+tests/filesys/base/Rubric                      30/ 30  20.0%/ 20.0%
+tests/userprog/Rubric.functionality           108/108  10.0%/ 10.0%
+tests/userprog/Rubric.robustness               88/ 88   5.0%/  5.0%
+--------------------------------------------- --- --- ------ ------
+Total                                                  72.9%/100.0%
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+SUMMARY OF INDIVIDUAL TESTS
+
+Functionality of extended file system (tests/filesys/extended/Rubric.functionality):
+	- Test directory support.
+	     1/ 1 tests/filesys/extended/dir-mkdir
+	     3/ 3 tests/filesys/extended/dir-mk-tree
+
+	     1/ 1 tests/filesys/extended/dir-rmdir
+	     3/ 3 tests/filesys/extended/dir-rm-tree
+
+	  ** 0/ 5 tests/filesys/extended/dir-vine
+
+	- Test file growth.
+	     1/ 1 tests/filesys/extended/grow-create
+	     1/ 1 tests/filesys/extended/grow-seq-sm
+	  ** 0/ 3 tests/filesys/extended/grow-seq-lg
+	     3/ 3 tests/filesys/extended/grow-sparse
+	     3/ 3 tests/filesys/extended/grow-two-files
+	     1/ 1 tests/filesys/extended/grow-tell
+	     1/ 1 tests/filesys/extended/grow-file-size
+
+	- Test directory growth.
+	     1/ 1 tests/filesys/extended/grow-dir-lg
+	     1/ 1 tests/filesys/extended/grow-root-sm
+	     1/ 1 tests/filesys/extended/grow-root-lg
+
+	- Test writing from multiple processes.
+	     5/ 5 tests/filesys/extended/syn-rw
+
+	- Section summary.
+	     14/ 16 tests passed
+	     26/ 34 points subtotal
+
+Robustness of file system (tests/filesys/extended/Rubric.robustness):
+	     1/ 1 tests/filesys/extended/dir-empty-name
+	     1/ 1 tests/filesys/extended/dir-open
+	     1/ 1 tests/filesys/extended/dir-over-file
+	     1/ 1 tests/filesys/extended/dir-under-file
+
+	     3/ 3 tests/filesys/extended/dir-rm-cwd
+	     2/ 2 tests/filesys/extended/dir-rm-parent
+	     1/ 1 tests/filesys/extended/dir-rm-root
+
+	- Section summary.
+	      7/  7 tests passed
+	     10/ 10 points subtotal
+
+Persistence of file system (tests/filesys/extended/Rubric.persistence):
+	  ** 0/ 1 tests/filesys/extended/dir-empty-name-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-mk-tree-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-mkdir-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-open-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-over-file-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-rm-cwd-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-rm-parent-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-rm-root-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-rm-tree-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-rmdir-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-under-file-persistence
+	  ** 0/ 1 tests/filesys/extended/dir-vine-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-create-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-dir-lg-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-file-size-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-root-lg-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-root-sm-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-seq-lg-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-seq-sm-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-sparse-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-tell-persistence
+	  ** 0/ 1 tests/filesys/extended/grow-two-files-persistence
+	  ** 0/ 1 tests/filesys/extended/syn-rw-persistence
+
+	- Section summary.
+	      0/ 23 tests passed
+	      0/ 23 points subtotal
+
+Functionality of base file system (tests/filesys/base/Rubric):
+	- Test basic support for small files.
+	     1/ 1 tests/filesys/base/sm-create
+	     2/ 2 tests/filesys/base/sm-full
+	     2/ 2 tests/filesys/base/sm-random
+	     2/ 2 tests/filesys/base/sm-seq-block
+	     3/ 3 tests/filesys/base/sm-seq-random
+
+	- Test basic support for large files.
+	     1/ 1 tests/filesys/base/lg-create
+	     2/ 2 tests/filesys/base/lg-full
+	     2/ 2 tests/filesys/base/lg-random
+	     2/ 2 tests/filesys/base/lg-seq-block
+	     3/ 3 tests/filesys/base/lg-seq-random
+
+	- Test synchronized multiprogram access to files.
+	     4/ 4 tests/filesys/base/syn-read
+	     4/ 4 tests/filesys/base/syn-write
+	     2/ 2 tests/filesys/base/syn-remove
+
+	- Section summary.
+	     13/ 13 tests passed
+	     30/ 30 points subtotal
+
+Functionality of system calls (tests/userprog/Rubric.functionality):
+	- Test argument passing on Pintos command line.
+	     3/ 3 tests/userprog/args-none
+	     3/ 3 tests/userprog/args-single
+	     3/ 3 tests/userprog/args-multiple
+	     3/ 3 tests/userprog/args-many
+	     3/ 3 tests/userprog/args-dbl-space
+
+	- Test "create" system call.
+	     3/ 3 tests/userprog/create-empty
+	     3/ 3 tests/userprog/create-long
+	     3/ 3 tests/userprog/create-normal
+	     3/ 3 tests/userprog/create-exists
+
+	- Test "open" system call.
+	     3/ 3 tests/userprog/open-missing
+	     3/ 3 tests/userprog/open-normal
+	     3/ 3 tests/userprog/open-twice
+
+	- Test "read" system call.
+	     3/ 3 tests/userprog/read-normal
+	     3/ 3 tests/userprog/read-zero
+
+	- Test "write" system call.
+	     3/ 3 tests/userprog/write-normal
+	     3/ 3 tests/userprog/write-zero
+
+	- Test "close" system call.
+	     3/ 3 tests/userprog/close-normal
+
+	- Test "exec" system call.
+	     5/ 5 tests/userprog/exec-once
+	     5/ 5 tests/userprog/exec-multiple
+	     5/ 5 tests/userprog/exec-arg
+
+	- Test "wait" system call.
+	     5/ 5 tests/userprog/wait-simple
+	     5/ 5 tests/userprog/wait-twice
+
+	- Test "exit" system call.
+	     5/ 5 tests/userprog/exit
+
+	- Test "halt" system call.
+	     3/ 3 tests/userprog/halt
+
+	- Test recursive execution of user programs.
+	    15/15 tests/userprog/multi-recurse
+
+	- Test read-only executable feature.
+	     3/ 3 tests/userprog/rox-simple
+	     3/ 3 tests/userprog/rox-child
+	     3/ 3 tests/userprog/rox-multichild
+
+	- Section summary.
+	     28/ 28 tests passed
+	    108/108 points subtotal
+
+Robustness of system calls (tests/userprog/Rubric.robustness):
+	- Test robustness of file descriptor handling.
+	     2/ 2 tests/userprog/close-stdin
+	     2/ 2 tests/userprog/close-stdout
+	     2/ 2 tests/userprog/close-bad-fd
+	     2/ 2 tests/userprog/close-twice
+	     2/ 2 tests/userprog/read-bad-fd
+	     2/ 2 tests/userprog/read-stdout
+	     2/ 2 tests/userprog/write-bad-fd
+	     2/ 2 tests/userprog/write-stdin
+	     2/ 2 tests/userprog/multi-child-fd
+
+	- Test robustness of pointer handling.
+	     3/ 3 tests/userprog/create-bad-ptr
+	     3/ 3 tests/userprog/exec-bad-ptr
+	     3/ 3 tests/userprog/open-bad-ptr
+	     3/ 3 tests/userprog/read-bad-ptr
+	     3/ 3 tests/userprog/write-bad-ptr
+
+	- Test robustness of buffer copying across page boundaries.
+	     3/ 3 tests/userprog/create-bound
+	     3/ 3 tests/userprog/open-boundary
+	     3/ 3 tests/userprog/read-boundary
+	     3/ 3 tests/userprog/write-boundary
+
+	- Test handling of null pointer and empty strings.
+	     2/ 2 tests/userprog/create-null
+	     2/ 2 tests/userprog/open-null
+	     2/ 2 tests/userprog/open-empty
+
+	- Test robustness of system call implementation.
+	     3/ 3 tests/userprog/sc-bad-arg
+	     3/ 3 tests/userprog/sc-bad-sp
+	     5/ 5 tests/userprog/sc-boundary
+	     5/ 5 tests/userprog/sc-boundary-2
+
+	- Test robustness of "exec" and "wait" system calls.
+	     5/ 5 tests/userprog/exec-missing
+	     5/ 5 tests/userprog/wait-bad-pid
+	     5/ 5 tests/userprog/wait-killed
+
+	- Test robustness of exception handling.
+	     1/ 1 tests/userprog/bad-read
+	     1/ 1 tests/userprog/bad-write
+	     1/ 1 tests/userprog/bad-jump
+	     1/ 1 tests/userprog/bad-read2
+	     1/ 1 tests/userprog/bad-write2
+	     1/ 1 tests/userprog/bad-jump2
+
+	- Section summary.
+	     34/ 34 tests passed
+	     88/ 88 points subtotal
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-vine FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hdb1 (sector=3222310924, size=4096)
+Call stack: 0xc002a591 0xc0025cca 0xc0025ce4 0xc0030541 0xc0031656 0xc0030be4 0xc002fa9e 0xc002eb3c 0xc002e554 0xc00223d2 0xc00225fc 0x804ac0b 0x80482d3 0x8048d97 0x8048dc8
+Translation of call stack:
+In kernel.o:
+0xc002a591: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0025cca: check_sector (...../../devices/block.c:114)
+0xc0025ce4: block_read (...../../devices/block.c:123)
+0xc0030541: buffer_cache_read (.../../../filesys/cache.c:94)
+0xc0031656: inode_open (...../../filesys/inode.c:255)
+0xc0030be4: dir_lookup (..../filesys/directory.c:221)
+0xc002fa9e: filesys_open (..../../filesys/filesys.c:94)
+0xc002eb3c: sys_open (...../userprog/syscall.c:401)
+0xc002e554: syscall_handler (...../userprog/syscall.c:167)
+0xc00223d2: intr_handler (..../threads/interrupt.c:367)
+0xc00225fc: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/extended/dir-vine:
+0x0804ac0b: open (...../lib/user/syscall.c:105)
+0x080482d3: test_main (...ys/extended/dir-vine.c:55)
+0x08048d97: main (...ild/../../tests/main.c:13)
+0x08048dc8: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/filesys/extended/dir-vine:
+
+Copying tests/filesys/extended/dir-vine to scratch partition...
+Copying tests/filesys/extended/tar to scratch partition...
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/kJqVmjRD7w.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q -f extract run dir-vine
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 1,008 sectors (504 kB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 165 sectors (82 kB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'dir-vine' into the file system...
+Putting 'tar' into the file system...
+Erasing ustar archive...
+Executing 'dir-vine':
+(dir-vine) begin
+(dir-vine) creating many levels of files and directories...
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hdb1 (sector=3222310924, size=4096)
+
+Call stack: 0xc002a591 0xc0025cca 0xc0025ce4 0xc0030541 0xc0031656 0xc0030be4 0xc002fa9e 0xc002eb3c 0xc002e554 0xc00223d2 0xc00225fc 0x804ac0b 0x80482d3 0x8048d97 0x8048dc8.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:203 in lock_acquire().
+Simulation terminated due to kernel panic.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-seq-lg FAILURE:
+
+run: 472 bytes read starting at offset 62976 in "testme" differ from expected: FAILED
+
+OUTPUT FROM tests/filesys/extended/grow-seq-lg:
+
+Copying tests/filesys/extended/grow-seq-lg to scratch partition...
+Copying tests/filesys/extended/tar to scratch partition...
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/SlhRyJxLSo.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q -f extract run grow-seq-lg
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 1,008 sectors (504 kB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 160 sectors (80 kB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'grow-seq-lg' into the file system...
+Putting 'tar' into the file system...
+Erasing ustar archive...
+Executing 'grow-seq-lg':
+(grow-seq-lg) begin
+(grow-seq-lg) create "testme"
+(grow-seq-lg) open "testme"
+(grow-seq-lg) writing "testme"
+(grow-seq-lg) close "testme"
+(grow-seq-lg) open "testme" for verification
+(grow-seq-lg) 472 bytes read starting at offset 62976 in "testme" differ from expected.
+(grow-seq-lg) Showing first differing 64 bytes.
+(grow-seq-lg) Data actually read:
+0000f600  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+0000f610  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+0000f620  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+0000f630  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+(grow-seq-lg) Expected data:
+0000f600  11 6e ad 31 98 20 88 7e-17 49 ed 75 88 99 b2 36 |.n.1. .~.I.u...6|
+0000f610  1d 86 72 81 6b 57 e9 6b-08 f2 85 f3 0a 84 1a 99 |..r.kW.k........|
+0000f620  3e 56 31 c3 41 97 d7 bb-a8 95 a7 cf 75 f3 ec d5 |>V1.A.......u...|
+0000f630  fd 74 76 d2 cc 50 f1 a0-56 be 9a 95 74 d4 88 25 |.tv..P..V...t..%|
+(grow-seq-lg) 472 bytes read starting at offset 62976 in "testme" differ from expected: FAILED
+grow-seq-lg: exit(1)
+Execution of 'grow-seq-lg' complete.
+Timer: 100 ticks
+Thread: 40 idle ticks, 40 kernel ticks, 20 user ticks
+hdb1 (filesys): 623 reads, 465 writes
+hda2 (scratch): 159 reads, 2 writes
+Console: 2066 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-empty-name-persistence FAILURE:
+
+Extracted file system contents are not correct.
+dir-empty-name is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+
+Expected contents of file system:
+dir-empty-name: 36084-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-empty-name-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/4fXIVmjBhh.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 68 ticks
+Thread: 38 idle ticks, 26 kernel ticks, 4 user ticks
+hdb1 (filesys): 272 reads, 92 writes
+hda2 (scratch): 0 reads, 92 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-empty-name.tar out of /tmp/4fXIVmjBhh.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-mk-tree-persistence FAILURE:
+
+Extracted file system contents are not correct.
+0/0 is missing from the file system.
+0/0/0 is missing from the file system.
+0/0/0/0 is missing from the file system.
+0/0/0/1 is missing from the file system.
+0/0/0/2 is missing from the file system.
+0/0/0/3 is missing from the file system.
+0/0/1 is missing from the file system.
+0/0/1/0 is missing from the file system.
+0/0/1/1 is missing from the file system.
+0/0/1/2 is missing from the file system.
+0/0/1/3 is missing from the file system.
+0/0/2 is missing from the file system.
+0/0/2/0 is missing from the file system.
+0/0/2/1 is missing from the file system.
+0/0/2/2 is missing from the file system.
+0/0/2/3 is missing from the file system.
+0/1/0 is missing from the file system.
+0/1/0/0 is missing from the file system.
+0/1/0/1 is missing from the file system.
+0/1/0/2 is missing from the file system.
+0/1/0/3 is missing from the file system.
+0/1/1/0 is missing from the file system.
+0/1/2/0 is missing from the file system.
+0/2/0 is missing from the file system.
+0/2/0/0 is missing from the file system.
+0/2/0/1 is missing from the file system.
+0/2/0/2 is missing from the file system.
+0/2/0/3 is missing from the file system.
+0/2/1/0 is missing from the file system.
+0/2/2/0 is missing from the file system.
+1/0 is missing from the file system.
+1/0/0 is missing from the file system.
+1/0/0/0 is missing from the file system.
+1/0/0/1 is missing from the file system.
+1/0/0/2 is missing from the file system.
+1/0/0/3 is missing from the file system.
+1/0/1 is missing from the file system.
+1/0/1/0 is missing from the file system.
+1/0/1/1 is missing from the file system.
+1/0/1/2 is missing from the file system.
+1/0/1/3 is missing from the file system.
+1/0/2 is missing from the file system.
+1/0/2/0 is missing from the file system.
+1/0/2/1 is missing from the file system.
+1/0/2/2 is missing from the file system.
+1/0/2/3 is missing from the file system.
+1/1/0 is missing from the file system.
+1/1/0/0 is missing from the file system.
+1/1/0/1 is missing from the file system.
+1/1/0/2 is missing from the file system.
+1/1/0/3 is missing from the file system.
+1/1/1/0 is missing from the file system.
+1/1/2/0 is missing from the file system.
+1/2/0 is missing from the file system.
+1/2/0/0 is missing from the file system.
+1/2/0/1 is missing from the file system.
+1/2/0/2 is missing from the file system.
+1/2/0/3 is missing from the file system.
+1/2/1/0 is missing from the file system.
+1/2/2/0 is missing from the file system.
+1/2/2/2 is missing from the file system.
+1/2/2/3 is missing from the file system.
+2 is missing from the file system.
+2/0 is missing from the file system.
+2/0/0 is missing from the file system.
+2/0/0/0 is missing from the file system.
+2/0/0/1 is missing from the file system.
+2/0/0/2 is missing from the file system.
+2/0/0/3 is missing from the file system.
+2/0/1 is missing from the file system.
+2/0/1/0 is missing from the file system.
+2/0/1/1 is missing from the file system.
+2/0/1/2 is missing from the file system.
+2/0/1/3 is missing from the file system.
+2/0/2 is missing from the file system.
+2/0/2/0 is missing from the file system.
+2/0/2/1 is missing from the file system.
+2/0/2/2 is missing from the file system.
+2/0/2/3 is missing from the file system.
+2/1 is missing from the file system.
+2/1/0 is missing from the file system.
+2/1/0/0 is missing from the file system.
+2/1/0/1 is missing from the file system.
+2/1/0/2 is missing from the file system.
+2/1/0/3 is missing from the file system.
+2/1/1 is missing from the file system.
+2/1/1/0 is missing from the file system.
+2/1/1/1 is missing from the file system.
+2/1/1/2 is missing from the file system.
+2/1/1/3 is missing from the file system.
+2/1/2 is missing from the file system.
+2/1/2/0 is missing from the file system.
+2/1/2/1 is missing from the file system.
+2/1/2/2 is missing from the file system.
+2/1/2/3 is missing from the file system.
+2/2 is missing from the file system.
+2/2/0 is missing from the file system.
+2/2/0/0 is missing from the file system.
+2/2/0/1 is missing from the file system.
+2/2/0/2 is missing from the file system.
+2/2/0/3 is missing from the file system.
+2/2/1 is missing from the file system.
+2/2/1/0 is missing from the file system.
+2/2/1/1 is missing from the file system.
+2/2/1/2 is missing from the file system.
+2/2/1/3 is missing from the file system.
+2/2/2 is missing from the file system.
+2/2/2/0 is missing from the file system.
+2/2/2/1 is missing from the file system.
+2/2/2/2 is missing from the file system.
+2/2/2/3 is missing from the file system.
+3 is missing from the file system.
+3/0 is missing from the file system.
+3/0/0 is missing from the file system.
+3/0/0/0 is missing from the file system.
+3/0/0/1 is missing from the file system.
+3/0/0/2 is missing from the file system.
+3/0/0/3 is missing from the file system.
+3/0/1 is missing from the file system.
+3/0/1/0 is missing from the file system.
+3/0/1/1 is missing from the file system.
+3/0/1/2 is missing from the file system.
+3/0/1/3 is missing from the file system.
+3/0/2 is missing from the file system.
+3/0/2/0 is missing from the file system.
+3/0/2/1 is missing from the file system.
+3/0/2/2 is missing from the file system.
+3/0/2/3 is missing from the file system.
+3/1 is missing from the file system.
+3/1/0 is missing from the file system.
+3/1/0/0 is missing from the file system.
+3/1/0/1 is missing from the file system.
+3/1/0/2 is missing from the file system.
+3/1/0/3 is missing from the file system.
+3/1/1 is missing from the file system.
+3/1/1/0 is missing from the file system.
+3/1/1/1 is missing from the file system.
+3/1/1/2 is missing from the file system.
+3/1/1/3 is missing from the file system.
+3/1/2 is missing from the file system.
+3/1/2/0 is missing from the file system.
+3/1/2/1 is missing from the file system.
+3/1/2/2 is missing from the file system.
+3/1/2/3 is missing from the file system.
+3/2 is missing from the file system.
+3/2/0 is missing from the file system.
+3/2/0/0 is missing from the file system.
+3/2/0/1 is missing from the file system.
+3/2/0/2 is missing from the file system.
+3/2/0/3 is missing from the file system.
+3/2/1 is missing from the file system.
+3/2/1/0 is missing from the file system.
+3/2/1/1 is missing from the file system.
+3/2/1/2 is missing from the file system.
+3/2/1/3 is missing from the file system.
+3/2/2 is missing from the file system.
+3/2/2/0 is missing from the file system.
+3/2/2/1 is missing from the file system.
+3/2/2/2 is missing from the file system.
+3/2/2/3 is missing from the file system.
+dir-mk-tree is missing from the file system.
+
+Actual contents of file system:
+0: directory
+0/1: directory
+0/1/1: directory
+0/1/1/1: 0-byte file
+0/1/1/2: 0-byte file
+0/1/1/3: 0-byte file
+0/1/2: directory
+0/1/2/1: 0-byte file
+0/1/2/2: 0-byte file
+0/1/2/3: 0-byte file
+0/2: directory
+0/2/1: directory
+0/2/1/1: 0-byte file
+0/2/1/2: 0-byte file
+0/2/1/3: 0-byte file
+0/2/2: directory
+0/2/2/1: 0-byte file
+0/2/2/2: 0-byte file
+0/2/2/3: 0-byte file
+1: directory
+1/1: directory
+1/1/1: directory
+1/1/1/1: 0-byte file
+1/1/1/2: 0-byte file
+1/1/1/3: 0-byte file
+1/1/2: directory
+1/1/2/1: 0-byte file
+1/1/2/2: 0-byte file
+1/1/2/3: 0-byte file
+1/2: directory
+1/2/1: directory
+1/2/1/1: 0-byte file
+1/2/1/2: 0-byte file
+1/2/1/3: 0-byte file
+1/2/2: directory
+1/2/2/1: 0-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+0: directory
+0/0: directory
+0/0/0: directory
+0/0/0/0: 0-byte file
+0/0/0/1: 0-byte file
+0/0/0/2: 0-byte file
+0/0/0/3: 0-byte file
+0/0/1: directory
+0/0/1/0: 0-byte file
+0/0/1/1: 0-byte file
+0/0/1/2: 0-byte file
+0/0/1/3: 0-byte file
+0/0/2: directory
+0/0/2/0: 0-byte file
+0/0/2/1: 0-byte file
+0/0/2/2: 0-byte file
+0/0/2/3: 0-byte file
+0/1: directory
+0/1/0: directory
+0/1/0/0: 0-byte file
+0/1/0/1: 0-byte file
+0/1/0/2: 0-byte file
+0/1/0/3: 0-byte file
+0/1/1: directory
+0/1/1/0: 0-byte file
+0/1/1/1: 0-byte file
+0/1/1/2: 0-byte file
+0/1/1/3: 0-byte file
+0/1/2: directory
+0/1/2/0: 0-byte file
+0/1/2/1: 0-byte file
+0/1/2/2: 0-byte file
+0/1/2/3: 0-byte file
+0/2: directory
+0/2/0: directory
+0/2/0/0: 0-byte file
+0/2/0/1: 0-byte file
+0/2/0/2: 0-byte file
+0/2/0/3: 0-byte file
+0/2/1: directory
+0/2/1/0: 0-byte file
+0/2/1/1: 0-byte file
+0/2/1/2: 0-byte file
+0/2/1/3: 0-byte file
+0/2/2: directory
+0/2/2/0: 0-byte file
+0/2/2/1: 0-byte file
+0/2/2/2: 0-byte file
+0/2/2/3: 0-byte file
+1: directory
+1/0: directory
+1/0/0: directory
+1/0/0/0: 0-byte file
+1/0/0/1: 0-byte file
+1/0/0/2: 0-byte file
+1/0/0/3: 0-byte file
+1/0/1: directory
+1/0/1/0: 0-byte file
+1/0/1/1: 0-byte file
+1/0/1/2: 0-byte file
+1/0/1/3: 0-byte file
+1/0/2: directory
+1/0/2/0: 0-byte file
+1/0/2/1: 0-byte file
+1/0/2/2: 0-byte file
+1/0/2/3: 0-byte file
+1/1: directory
+1/1/0: directory
+1/1/0/0: 0-byte file
+1/1/0/1: 0-byte file
+1/1/0/2: 0-byte file
+1/1/0/3: 0-byte file
+1/1/1: directory
+1/1/1/0: 0-byte file
+1/1/1/1: 0-byte file
+1/1/1/2: 0-byte file
+1/1/1/3: 0-byte file
+1/1/2: directory
+1/1/2/0: 0-byte file
+1/1/2/1: 0-byte file
+1/1/2/2: 0-byte file
+1/1/2/3: 0-byte file
+1/2: directory
+1/2/0: directory
+1/2/0/0: 0-byte file
+1/2/0/1: 0-byte file
+1/2/0/2: 0-byte file
+1/2/0/3: 0-byte file
+1/2/1: directory
+1/2/1/0: 0-byte file
+1/2/1/1: 0-byte file
+1/2/1/2: 0-byte file
+1/2/1/3: 0-byte file
+1/2/2: directory
+1/2/2/0: 0-byte file
+1/2/2/1: 0-byte file
+1/2/2/2: 0-byte file
+1/2/2/3: 0-byte file
+2: directory
+2/0: directory
+2/0/0: directory
+2/0/0/0: 0-byte file
+2/0/0/1: 0-byte file
+2/0/0/2: 0-byte file
+2/0/0/3: 0-byte file
+2/0/1: directory
+2/0/1/0: 0-byte file
+2/0/1/1: 0-byte file
+2/0/1/2: 0-byte file
+2/0/1/3: 0-byte file
+2/0/2: directory
+2/0/2/0: 0-byte file
+2/0/2/1: 0-byte file
+2/0/2/2: 0-byte file
+2/0/2/3: 0-byte file
+2/1: directory
+2/1/0: directory
+2/1/0/0: 0-byte file
+2/1/0/1: 0-byte file
+2/1/0/2: 0-byte file
+2/1/0/3: 0-byte file
+2/1/1: directory
+2/1/1/0: 0-byte file
+2/1/1/1: 0-byte file
+2/1/1/2: 0-byte file
+2/1/1/3: 0-byte file
+2/1/2: directory
+2/1/2/0: 0-byte file
+2/1/2/1: 0-byte file
+2/1/2/2: 0-byte file
+2/1/2/3: 0-byte file
+2/2: directory
+2/2/0: directory
+2/2/0/0: 0-byte file
+2/2/0/1: 0-byte file
+2/2/0/2: 0-byte file
+2/2/0/3: 0-byte file
+2/2/1: directory
+2/2/1/0: 0-byte file
+2/2/1/1: 0-byte file
+2/2/1/2: 0-byte file
+2/2/1/3: 0-byte file
+2/2/2: directory
+2/2/2/0: 0-byte file
+2/2/2/1: 0-byte file
+2/2/2/2: 0-byte file
+2/2/2/3: 0-byte file
+3: directory
+3/0: directory
+3/0/0: directory
+3/0/0/0: 0-byte file
+3/0/0/1: 0-byte file
+3/0/0/2: 0-byte file
+3/0/0/3: 0-byte file
+3/0/1: directory
+3/0/1/0: 0-byte file
+3/0/1/1: 0-byte file
+3/0/1/2: 0-byte file
+3/0/1/3: 0-byte file
+3/0/2: directory
+3/0/2/0: 0-byte file
+3/0/2/1: 0-byte file
+3/0/2/2: 0-byte file
+3/0/2/3: 0-byte file
+3/1: directory
+3/1/0: directory
+3/1/0/0: 0-byte file
+3/1/0/1: 0-byte file
+3/1/0/2: 0-byte file
+3/1/0/3: 0-byte file
+3/1/1: directory
+3/1/1/0: 0-byte file
+3/1/1/1: 0-byte file
+3/1/1/2: 0-byte file
+3/1/1/3: 0-byte file
+3/1/2: directory
+3/1/2/0: 0-byte file
+3/1/2/1: 0-byte file
+3/1/2/2: 0-byte file
+3/1/2/3: 0-byte file
+3/2: directory
+3/2/0: directory
+3/2/0/0: 0-byte file
+3/2/0/1: 0-byte file
+3/2/0/2: 0-byte file
+3/2/0/3: 0-byte file
+3/2/1: directory
+3/2/1/0: 0-byte file
+3/2/1/1: 0-byte file
+3/2/1/2: 0-byte file
+3/2/1/3: 0-byte file
+3/2/2: directory
+3/2/2/0: 0-byte file
+3/2/2/1: 0-byte file
+3/2/2/2: 0-byte file
+3/2/2/3: 0-byte file
+dir-mk-tree: 37852-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-mk-tree-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/LH8OcO3fTw.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 70 ticks
+Thread: 30 idle ticks, 28 kernel ticks, 12 user ticks
+hdb1 (filesys): 530 reads, 169 writes
+hda2 (scratch): 0 reads, 168 writes
+Console: 823 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-mk-tree.tar out of /tmp/LH8OcO3fTw.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-mkdir-persistence FAILURE:
+
+Extracted file system contents are not correct.
+a/b is missing from the file system.
+dir-mkdir is missing from the file system.
+
+Actual contents of file system:
+a: directory
+tar: 43396-byte file
+
+Expected contents of file system:
+a: directory
+a/b: 512-byte file
+dir-mkdir: 36280-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-mkdir-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/tKYYcrWkei.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  117,760,000 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 64 ticks
+Thread: 38 idle ticks, 26 kernel ticks, 0 user ticks
+hdb1 (filesys): 275 reads, 93 writes
+hda2 (scratch): 0 reads, 93 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-mkdir.tar out of /tmp/tKYYcrWkei.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-open-persistence FAILURE:
+
+Extracted file system contents are not correct.
+dir-open is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+xyzzy: directory
+
+Expected contents of file system:
+dir-open: 36356-byte file
+tar: 43396-byte file
+xyzzy: directory
+
+OUTPUT FROM tests/filesys/extended/dir-open-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/Hc5GLxluXp.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  127,590,400 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 65 ticks
+Thread: 34 idle ticks, 26 kernel ticks, 5 user ticks
+hdb1 (filesys): 275 reads, 93 writes
+hda2 (scratch): 0 reads, 93 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-open.tar out of /tmp/Hc5GLxluXp.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-over-file-persistence FAILURE:
+
+Extracted file system contents are not correct.
+dir-over-file is missing from the file system.
+
+Actual contents of file system:
+abc: directory
+tar: 43396-byte file
+
+Expected contents of file system:
+abc: directory
+dir-over-file: 36168-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-over-file-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/drxjW33Vmb.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 70 ticks
+Thread: 30 idle ticks, 31 kernel ticks, 9 user ticks
+hdb1 (filesys): 275 reads, 93 writes
+hda2 (scratch): 0 reads, 93 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-over-file.tar out of /tmp/drxjW33Vmb.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-rm-cwd-persistence FAILURE:
+
+Extracted file system contents are not correct.
+dir-rm-cwd is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+
+Expected contents of file system:
+dir-rm-cwd: 38520-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-rm-cwd-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/oihjDerPzG.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 64 ticks
+Thread: 36 idle ticks, 25 kernel ticks, 3 user ticks
+hdb1 (filesys): 272 reads, 92 writes
+hda2 (scratch): 0 reads, 92 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-rm-cwd.tar out of /tmp/oihjDerPzG.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-rm-parent-persistence FAILURE:
+
+Extracted file system contents are not correct.
+a/b is missing from the file system.
+dir-rm-parent is missing from the file system.
+
+Actual contents of file system:
+a: directory
+tar: 43396-byte file
+
+Expected contents of file system:
+a: directory
+a/b: directory
+dir-rm-parent: 36368-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-rm-parent-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/Ydhkk50Z3G.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 64 ticks
+Thread: 33 idle ticks, 26 kernel ticks, 5 user ticks
+hdb1 (filesys): 275 reads, 93 writes
+hda2 (scratch): 0 reads, 93 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-rm-parent.tar out of /tmp/Ydhkk50Z3G.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-rm-root-persistence FAILURE:
+
+Extracted file system contents are not correct.
+dir-rm-root is missing from the file system.
+
+Actual contents of file system:
+a: 243-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+a: 243-byte file
+dir-rm-root: 36148-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-rm-root-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/vPLc6w074E.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 66 ticks
+Thread: 32 idle ticks, 29 kernel ticks, 5 user ticks
+hdb1 (filesys): 278 reads, 94 writes
+hda2 (scratch): 0 reads, 94 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-rm-root.tar out of /tmp/vPLc6w074E.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-rm-tree-persistence FAILURE:
+
+Extracted file system contents are not correct.
+dir-rm-tree is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+
+Expected contents of file system:
+dir-rm-tree: 39236-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-rm-tree-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/ypieAQDMty.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  115,916,800 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 66 ticks
+Thread: 30 idle ticks, 30 kernel ticks, 6 user ticks
+hdb1 (filesys): 272 reads, 92 writes
+hda2 (scratch): 0 reads, 92 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-rm-tree.tar out of /tmp/ypieAQDMty.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-rmdir-persistence FAILURE:
+
+Extracted file system contents are not correct.
+dir-rmdir is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+
+Expected contents of file system:
+dir-rmdir: 36212-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-rmdir-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/N3o0vvss6t.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  104,755,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 58 ticks
+Thread: 31 idle ticks, 23 kernel ticks, 4 user ticks
+hdb1 (filesys): 272 reads, 92 writes
+hda2 (scratch): 0 reads, 92 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-rmdir.tar out of /tmp/N3o0vvss6t.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-under-file-persistence FAILURE:
+
+Extracted file system contents are not correct.
+dir-under-file is missing from the file system.
+
+Actual contents of file system:
+abc: 0-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+abc: 0-byte file
+dir-under-file: 36168-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/dir-under-file-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/RhvF23kvv6.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  117,760,000 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 69 ticks
+Thread: 30 idle ticks, 31 kernel ticks, 8 user ticks
+hdb1 (filesys): 275 reads, 93 writes
+hda2 (scratch): 0 reads, 93 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-under-file.tar out of /tmp/RhvF23kvv6.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-vine-persistence FAILURE:
+
+Prerequisite test tests/filesys/extended/dir-vine failed.
+
+OUTPUT FROM tests/filesys/extended/dir-vine-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/0TObb_aL5N.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa11
+
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+load: tar: open failed
+Execution of 'tar fs.tar /' complete.
+tar: exit(-1)
+Appending 'fs.tar' to ustar archive on scratch device...
+Kernel PANIC at ../../filesys/fsutil.c:187 in fsutil_append(): fs.tar: open failed
+Call stack: 0xc002a591 0xc0032214 0xc002095c 0xc00203b4.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 57 ticks
+Thread: 32 idle ticks, 25 kernel ticks, 0 user ticks
+hdb1 (filesys): 4 reads, 0 writes
+hda2 (scratch): 0 reads, 0 writes
+Console: 1134 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/dir-vine.tar out of /tmp/0TObb_aL5N.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-create-persistence FAILURE:
+
+Extracted file system contents are not correct.
+grow-create is missing from the file system.
+
+Actual contents of file system:
+blargle: 0-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+blargle: 0-byte file
+grow-create: 36248-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-create-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/EnBMx5Msjt.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  124,313,600 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 69 ticks
+Thread: 33 idle ticks, 27 kernel ticks, 9 user ticks
+hdb1 (filesys): 275 reads, 93 writes
+hda2 (scratch): 0 reads, 93 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-create.tar out of /tmp/EnBMx5Msjt.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-dir-lg-persistence FAILURE:
+
+Extracted file system contents are not correct.
+grow-dir-lg is missing from the file system.
+x/file0 is missing from the file system.
+x/file19 is missing from the file system.
+x/file20 is missing from the file system.
+x/file21 is missing from the file system.
+x/file22 is missing from the file system.
+x/file23 is missing from the file system.
+x/file24 is missing from the file system.
+x/file25 is missing from the file system.
+x/file26 is missing from the file system.
+x/file27 is missing from the file system.
+x/file28 is missing from the file system.
+x/file29 is missing from the file system.
+x/file30 is missing from the file system.
+x/file31 is missing from the file system.
+x/file32 is missing from the file system.
+x/file33 is missing from the file system.
+x/file34 is missing from the file system.
+x/file35 is missing from the file system.
+x/file36 is missing from the file system.
+x/file37 is missing from the file system.
+x/file38 is missing from the file system.
+x/file39 is missing from the file system.
+x/file40 is missing from the file system.
+x/file41 is missing from the file system.
+x/file42 is missing from the file system.
+x/file43 is missing from the file system.
+x/file44 is missing from the file system.
+x/file45 is missing from the file system.
+x/file46 is missing from the file system.
+x/file47 is missing from the file system.
+x/file48 is missing from the file system.
+x/file49 is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+x: directory
+x/file1: 512-byte file
+x/file10: 512-byte file
+x/file11: 512-byte file
+x/file12: 512-byte file
+x/file13: 512-byte file
+x/file14: 512-byte file
+x/file15: 512-byte file
+x/file16: 512-byte file
+x/file17: 512-byte file
+x/file18: 512-byte file
+x/file2: 512-byte file
+x/file3: 512-byte file
+x/file4: 512-byte file
+x/file5: 512-byte file
+x/file6: 512-byte file
+x/file7: 512-byte file
+x/file8: 512-byte file
+x/file9: 512-byte file
+
+Expected contents of file system:
+grow-dir-lg: 36732-byte file
+tar: 43396-byte file
+x: directory
+x/file0: 512-byte file
+x/file1: 512-byte file
+x/file10: 512-byte file
+x/file11: 512-byte file
+x/file12: 512-byte file
+x/file13: 512-byte file
+x/file14: 512-byte file
+x/file15: 512-byte file
+x/file16: 512-byte file
+x/file17: 512-byte file
+x/file18: 512-byte file
+x/file19: 512-byte file
+x/file2: 512-byte file
+x/file20: 512-byte file
+x/file21: 512-byte file
+x/file22: 512-byte file
+x/file23: 512-byte file
+x/file24: 512-byte file
+x/file25: 512-byte file
+x/file26: 512-byte file
+x/file27: 512-byte file
+x/file28: 512-byte file
+x/file29: 512-byte file
+x/file3: 512-byte file
+x/file30: 512-byte file
+x/file31: 512-byte file
+x/file32: 512-byte file
+x/file33: 512-byte file
+x/file34: 512-byte file
+x/file35: 512-byte file
+x/file36: 512-byte file
+x/file37: 512-byte file
+x/file38: 512-byte file
+x/file39: 512-byte file
+x/file4: 512-byte file
+x/file40: 512-byte file
+x/file41: 512-byte file
+x/file42: 512-byte file
+x/file43: 512-byte file
+x/file44: 512-byte file
+x/file45: 512-byte file
+x/file46: 512-byte file
+x/file47: 512-byte file
+x/file48: 512-byte file
+x/file49: 512-byte file
+x/file5: 512-byte file
+x/file6: 512-byte file
+x/file7: 512-byte file
+x/file8: 512-byte file
+x/file9: 512-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-dir-lg-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/aZkTFaFMFh.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 82 ticks
+Thread: 30 idle ticks, 30 kernel ticks, 22 user ticks
+hdb1 (filesys): 706 reads, 317 writes
+hda2 (scratch): 0 reads, 191 writes
+Console: 823 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-dir-lg.tar out of /tmp/aZkTFaFMFh.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-file-size-persistence FAILURE:
+
+Extracted file system contents are not correct.
+grow-file-size is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+testfile: 2134-byte file
+
+Expected contents of file system:
+grow-file-size: 36572-byte file
+tar: 43396-byte file
+testfile: 2134-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-file-size-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/zBXgu5Pk5N.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 69 ticks
+Thread: 33 idle ticks, 29 kernel ticks, 7 user ticks
+hdb1 (filesys): 290 reads, 98 writes
+hda2 (scratch): 0 reads, 98 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-file-size.tar out of /tmp/zBXgu5Pk5N.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-root-lg-persistence FAILURE:
+
+Extracted file system contents are not correct.
+file18 is missing from the file system.
+file19 is missing from the file system.
+file20 is missing from the file system.
+file21 is missing from the file system.
+file22 is missing from the file system.
+file23 is missing from the file system.
+file24 is missing from the file system.
+file25 is missing from the file system.
+file26 is missing from the file system.
+file27 is missing from the file system.
+file28 is missing from the file system.
+file29 is missing from the file system.
+file30 is missing from the file system.
+file31 is missing from the file system.
+file32 is missing from the file system.
+file33 is missing from the file system.
+file34 is missing from the file system.
+file35 is missing from the file system.
+file36 is missing from the file system.
+file37 is missing from the file system.
+file38 is missing from the file system.
+file39 is missing from the file system.
+file40 is missing from the file system.
+file41 is missing from the file system.
+file42 is missing from the file system.
+file43 is missing from the file system.
+file44 is missing from the file system.
+file45 is missing from the file system.
+file46 is missing from the file system.
+file47 is missing from the file system.
+file48 is missing from the file system.
+file49 is missing from the file system.
+grow-root-lg is missing from the file system.
+
+Actual contents of file system:
+file0: 512-byte file
+file1: 512-byte file
+file10: 512-byte file
+file11: 512-byte file
+file12: 512-byte file
+file13: 512-byte file
+file14: 512-byte file
+file15: 512-byte file
+file16: 512-byte file
+file17: 512-byte file
+file2: 512-byte file
+file3: 512-byte file
+file4: 512-byte file
+file5: 512-byte file
+file6: 512-byte file
+file7: 512-byte file
+file8: 512-byte file
+file9: 512-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+file0: 512-byte file
+file1: 512-byte file
+file10: 512-byte file
+file11: 512-byte file
+file12: 512-byte file
+file13: 512-byte file
+file14: 512-byte file
+file15: 512-byte file
+file16: 512-byte file
+file17: 512-byte file
+file18: 512-byte file
+file19: 512-byte file
+file2: 512-byte file
+file20: 512-byte file
+file21: 512-byte file
+file22: 512-byte file
+file23: 512-byte file
+file24: 512-byte file
+file25: 512-byte file
+file26: 512-byte file
+file27: 512-byte file
+file28: 512-byte file
+file29: 512-byte file
+file3: 512-byte file
+file30: 512-byte file
+file31: 512-byte file
+file32: 512-byte file
+file33: 512-byte file
+file34: 512-byte file
+file35: 512-byte file
+file36: 512-byte file
+file37: 512-byte file
+file38: 512-byte file
+file39: 512-byte file
+file4: 512-byte file
+file40: 512-byte file
+file41: 512-byte file
+file42: 512-byte file
+file43: 512-byte file
+file44: 512-byte file
+file45: 512-byte file
+file46: 512-byte file
+file47: 512-byte file
+file48: 512-byte file
+file49: 512-byte file
+file5: 512-byte file
+file6: 512-byte file
+file7: 512-byte file
+file8: 512-byte file
+file9: 512-byte file
+grow-root-lg: 36644-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-root-lg-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/9PioX9wctj.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 98 ticks
+Thread: 49 idle ticks, 28 kernel ticks, 21 user ticks
+hdb1 (filesys): 774 reads, 379 writes
+hda2 (scratch): 0 reads, 192 writes
+Console: 823 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-root-lg.tar out of /tmp/9PioX9wctj.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-root-sm-persistence FAILURE:
+
+Extracted file system contents are not correct.
+file18 is missing from the file system.
+file19 is missing from the file system.
+grow-root-sm is missing from the file system.
+
+Actual contents of file system:
+file0: 512-byte file
+file1: 512-byte file
+file10: 512-byte file
+file11: 512-byte file
+file12: 512-byte file
+file13: 512-byte file
+file14: 512-byte file
+file15: 512-byte file
+file16: 512-byte file
+file17: 512-byte file
+file2: 512-byte file
+file3: 512-byte file
+file4: 512-byte file
+file5: 512-byte file
+file6: 512-byte file
+file7: 512-byte file
+file8: 512-byte file
+file9: 512-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+file0: 512-byte file
+file1: 512-byte file
+file10: 512-byte file
+file11: 512-byte file
+file12: 512-byte file
+file13: 512-byte file
+file14: 512-byte file
+file15: 512-byte file
+file16: 512-byte file
+file17: 512-byte file
+file18: 512-byte file
+file19: 512-byte file
+file2: 512-byte file
+file3: 512-byte file
+file4: 512-byte file
+file5: 512-byte file
+file6: 512-byte file
+file7: 512-byte file
+file8: 512-byte file
+file9: 512-byte file
+grow-root-sm: 36644-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-root-sm-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/E9ODYGii_L.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 78 ticks
+Thread: 39 idle ticks, 27 kernel ticks, 12 user ticks
+hdb1 (filesys): 394 reads, 134 writes
+hda2 (scratch): 0 reads, 132 writes
+Console: 823 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-root-sm.tar out of /tmp/E9ODYGii_L.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-seq-lg-persistence FAILURE:
+
+Prerequisite test tests/filesys/extended/grow-seq-lg failed.
+
+OUTPUT FROM tests/filesys/extended/grow-seq-lg-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/0kq4SVsTVi.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 245 ticks
+Thread: 135 idle ticks, 26 kernel ticks, 84 user ticks
+hdb1 (filesys): 4676 reads, 4185 writes
+hda2 (scratch): 0 reads, 236 writes
+Console: 827 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-seq-lg.tar out of /tmp/0kq4SVsTVi.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-seq-sm-persistence FAILURE:
+
+Extracted file system contents are not correct.
+grow-seq-sm is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+testme: 5678-byte file
+
+Expected contents of file system:
+grow-seq-sm: 36276-byte file
+tar: 43396-byte file
+testme: 5678-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-seq-sm-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/qCEfONE5cs.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 65 ticks
+Thread: 40 idle ticks, 24 kernel ticks, 1 user ticks
+hdb1 (filesys): 311 reads, 105 writes
+hda2 (scratch): 0 reads, 105 writes
+Console: 822 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-seq-sm.tar out of /tmp/qCEfONE5cs.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-sparse-persistence FAILURE:
+
+Extracted file system contents are not correct.
+grow-sparse is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+testfile: 76543-byte file
+
+Expected contents of file system:
+grow-sparse: 36564-byte file
+tar: 43396-byte file
+testfile: 76543-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-sparse-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/dBcCr9mywB.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 238 ticks
+Thread: 103 idle ticks, 31 kernel ticks, 104 user ticks
+hdb1 (filesys): 5506 reads, 4994 writes
+hda2 (scratch): 0 reads, 243 writes
+Console: 828 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-sparse.tar out of /tmp/dBcCr9mywB.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-tell-persistence FAILURE:
+
+Extracted file system contents are not correct.
+grow-tell is missing from the file system.
+
+Actual contents of file system:
+foobar: 2134-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+foobar: 2134-byte file
+grow-tell: 36532-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-tell-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/HOIfUgxJJ5.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  157,081,600 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 69 ticks
+Thread: 35 idle ticks, 29 kernel ticks, 5 user ticks
+hdb1 (filesys): 290 reads, 98 writes
+hda2 (scratch): 0 reads, 98 writes
+Console: 820 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-tell.tar out of /tmp/HOIfUgxJJ5.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/grow-two-files-persistence FAILURE:
+
+Extracted file system contents are not correct.
+grow-two-files is missing from the file system.
+
+Actual contents of file system:
+a: 8143-byte file
+b: 8143-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+a: 8143-byte file
+b: 8143-byte file
+grow-two-files: 37432-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/grow-two-files-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/kSmTQAXJED.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 67 ticks
+Thread: 30 idle ticks, 28 kernel ticks, 9 user ticks
+hdb1 (filesys): 374 reads, 126 writes
+hda2 (scratch): 0 reads, 126 writes
+Console: 822 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/grow-two-files.tar out of /tmp/kSmTQAXJED.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/syn-rw-persistence FAILURE:
+
+Extracted file system contents are not correct.
+logfile is missing from the file system.
+syn-rw is missing from the file system.
+
+Actual contents of file system:
+child-syn-rw: 40512-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+child-syn-rw: 40512-byte file
+logfile: 4096-byte file
+syn-rw: 36840-byte file
+tar: 43396-byte file
+
+OUTPUT FROM tests/filesys/extended/syn-rw-persistence:
+
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/6xPUIaiRmr.dsk -drive format=raw,media=disk,index=1,file=tmp.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg...........................
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 3,024 sectors (1 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 225 sectors (112 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+Boot complete.
+Executing 'tar fs.tar /':
+tar: exit(0)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 70 ticks
+Thread: 30 idle ticks, 31 kernel ticks, 9 user ticks
+hdb1 (filesys): 546 reads, 183 writes
+hda2 (scratch): 0 reads, 182 writes
+Console: 822 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+Copying tests/filesys/extended/syn-rw.tar out of /tmp/6xPUIaiRmr.dsk...

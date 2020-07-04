@@ -1,0 +1,14 @@
+FAIL
+Extracted file system contents are not correct.
+grow-two-files is missing from the file system.
+
+Actual contents of file system:
+a: 8143-byte file
+b: 8143-byte file
+tar: 43396-byte file
+
+Expected contents of file system:
+a: 8143-byte file
+b: 8143-byte file
+grow-two-files: 37432-byte file
+tar: 43396-byte file

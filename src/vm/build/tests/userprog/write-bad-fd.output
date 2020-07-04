@@ -1,0 +1,39 @@
+Copying tests/userprog/write-bad-fd to scratch partition...
+qemu-system-i386 -device isa-debug-exit -drive format=raw,media=disk,index=0,file=/tmp/kPiI8uTrMi.dsk -m 4 -net none -nographic -monitor null
+c[?7l[2J[0mSeaBIOS (version 1.12.0-1)
+Booting from Hard Disk...
+PPiinnttooss  hhddaa1
+1
+LLooaaddiinngg.............................
+Kernel command line: -q -f extract run write-bad-fd
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  130,867,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 244 sectors (122 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 72 sectors (36 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'write-bad-fd' into the file system...
+Erasing ustar archive...
+Executing 'write-bad-fd':
+(write-bad-fd) begin
+(write-bad-fd) end
+write-bad-fd: exit(0)
+Execution of 'write-bad-fd' complete.
+Timer: 67 ticks
+Thread: 37 idle ticks, 28 kernel ticks, 2 user ticks
+hda2 (filesys): 169 reads, 143 writes
+hda3 (scratch): 71 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1001 characters output
+Keyboard: 0 keys pressed
+Exception: 4 page faults
+Powering off...

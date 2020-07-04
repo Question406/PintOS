@@ -1,0 +1,12 @@
+FAIL
+Extracted file system contents are not correct.
+dir-over-file is missing from the file system.
+
+Actual contents of file system:
+abc: directory
+tar: 43396-byte file
+
+Expected contents of file system:
+abc: directory
+dir-over-file: 36168-byte file
+tar: 43396-byte file

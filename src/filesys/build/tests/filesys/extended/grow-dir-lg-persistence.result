@@ -1,0 +1,112 @@
+FAIL
+Extracted file system contents are not correct.
+grow-dir-lg is missing from the file system.
+x/file0 is missing from the file system.
+x/file19 is missing from the file system.
+x/file20 is missing from the file system.
+x/file21 is missing from the file system.
+x/file22 is missing from the file system.
+x/file23 is missing from the file system.
+x/file24 is missing from the file system.
+x/file25 is missing from the file system.
+x/file26 is missing from the file system.
+x/file27 is missing from the file system.
+x/file28 is missing from the file system.
+x/file29 is missing from the file system.
+x/file30 is missing from the file system.
+x/file31 is missing from the file system.
+x/file32 is missing from the file system.
+x/file33 is missing from the file system.
+x/file34 is missing from the file system.
+x/file35 is missing from the file system.
+x/file36 is missing from the file system.
+x/file37 is missing from the file system.
+x/file38 is missing from the file system.
+x/file39 is missing from the file system.
+x/file40 is missing from the file system.
+x/file41 is missing from the file system.
+x/file42 is missing from the file system.
+x/file43 is missing from the file system.
+x/file44 is missing from the file system.
+x/file45 is missing from the file system.
+x/file46 is missing from the file system.
+x/file47 is missing from the file system.
+x/file48 is missing from the file system.
+x/file49 is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+x: directory
+x/file1: 512-byte file
+x/file10: 512-byte file
+x/file11: 512-byte file
+x/file12: 512-byte file
+x/file13: 512-byte file
+x/file14: 512-byte file
+x/file15: 512-byte file
+x/file16: 512-byte file
+x/file17: 512-byte file
+x/file18: 512-byte file
+x/file2: 512-byte file
+x/file3: 512-byte file
+x/file4: 512-byte file
+x/file5: 512-byte file
+x/file6: 512-byte file
+x/file7: 512-byte file
+x/file8: 512-byte file
+x/file9: 512-byte file
+
+Expected contents of file system:
+grow-dir-lg: 36732-byte file
+tar: 43396-byte file
+x: directory
+x/file0: 512-byte file
+x/file1: 512-byte file
+x/file10: 512-byte file
+x/file11: 512-byte file
+x/file12: 512-byte file
+x/file13: 512-byte file
+x/file14: 512-byte file
+x/file15: 512-byte file
+x/file16: 512-byte file
+x/file17: 512-byte file
+x/file18: 512-byte file
+x/file19: 512-byte file
+x/file2: 512-byte file
+x/file20: 512-byte file
+x/file21: 512-byte file
+x/file22: 512-byte file
+x/file23: 512-byte file
+x/file24: 512-byte file
+x/file25: 512-byte file
+x/file26: 512-byte file
+x/file27: 512-byte file
+x/file28: 512-byte file
+x/file29: 512-byte file
+x/file3: 512-byte file
+x/file30: 512-byte file
+x/file31: 512-byte file
+x/file32: 512-byte file
+x/file33: 512-byte file
+x/file34: 512-byte file
+x/file35: 512-byte file
+x/file36: 512-byte file
+x/file37: 512-byte file
+x/file38: 512-byte file
+x/file39: 512-byte file
+x/file4: 512-byte file
+x/file40: 512-byte file
+x/file41: 512-byte file
+x/file42: 512-byte file
+x/file43: 512-byte file
+x/file44: 512-byte file
+x/file45: 512-byte file
+x/file46: 512-byte file
+x/file47: 512-byte file
+x/file48: 512-byte file
+x/file49: 512-byte file
+x/file5: 512-byte file
+x/file6: 512-byte file
+x/file7: 512-byte file
+x/file8: 512-byte file
+x/file9: 512-byte file

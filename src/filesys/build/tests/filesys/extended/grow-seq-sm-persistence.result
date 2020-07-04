@@ -1,0 +1,12 @@
+FAIL
+Extracted file system contents are not correct.
+grow-seq-sm is missing from the file system.
+
+Actual contents of file system:
+tar: 43396-byte file
+testme: 5678-byte file
+
+Expected contents of file system:
+grow-seq-sm: 36276-byte file
+tar: 43396-byte file
+testme: 5678-byte file
